@@ -1,20 +1,16 @@
 package edu.java.bot;
 
-import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.configuration.ApplicationConfig;
 import edu.java.bot.service.Dialog;
-import edu.java.bot.service.TrackingBot;
 import edu.java.bot.user.User;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
