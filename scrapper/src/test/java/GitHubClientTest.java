@@ -1,10 +1,9 @@
-package edu.java.clients;
-
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import edu.java.ScrapperApplication;
-import edu.java.dtoClasses.DTOStackOverflow;
+import edu.java.clients.GitHubClient;
+import edu.java.dtoClasses.DTOGitHub;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -19,9 +18,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = ScrapperApplication.class)
 @WireMockTest
-class StackOverFlowClientTest {
+class GitHubClientTest {
+
     @Autowired
-    StackOverFlowClient stackOverFlowClient;
+    GitHubClient gitHubClient;
 
     @RegisterExtension
     static WireMockExtension wireMockExtension = WireMockExtension.newInstance()
@@ -30,33 +30,33 @@ class StackOverFlowClientTest {
 
     @DynamicPropertySource
     public static void setUpMockBaseUrl(DynamicPropertyRegistry registry) {
-        registry.add("app.base-url-stackoverflow", wireMockExtension::baseUrl);
+        registry.add("app.base-url-github", wireMockExtension::baseUrl);
     }
 
     @Test
     @DisplayName("Клиент работает правильно")
     public void test1() {
         wireMockExtension.stubFor(
-            WireMock.get("/questions/78056316?site=stackoverflow")
+            WireMock.get("/repos/aleckbb/test")
                 .willReturn(aResponse()
-                    .withBody("{\"items\":[{\"question_id\":11111111}]}")
+                    .withBody("{\"name\": \"mock\"}")
                     .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE))
         );
-        DTOStackOverflow dtoStackOverflow = stackOverFlowClient.getDTOStackOverflow("78056316");
-        assertEquals("11111111", dtoStackOverflow.items().getFirst().id());
+        DTOGitHub dtoGitHub = gitHubClient.getDTOGitHub("aleckbb", "test");
+        assertEquals("mock", dtoGitHub.repoName());
     }
 
     @Test
     @DisplayName("Ошибка клиента")
     public void test2() {
         wireMockExtension.stubFor(
-            WireMock.get("/questions/78056316?site=stackoverflow")
+            WireMock.get("/repos/aleckbb/test")
                 .willReturn(aResponse()
                     .withStatus(400))
         );
         String res = "";
         try {
-            stackOverFlowClient.getDTOStackOverflow("78056316");
+            gitHubClient.getDTOGitHub("aleckbb", "test");
         } catch (RuntimeException e) {
             res = e.getMessage();
         }
@@ -68,13 +68,13 @@ class StackOverFlowClientTest {
     @DisplayName("Ошибка сервера")
     public void test3() {
         wireMockExtension.stubFor(
-            WireMock.get("/questions/78056316?site=stackoverflow")
+            WireMock.get("/repos/aleckbb/test")
                 .willReturn(aResponse()
                     .withStatus(500))
         );
         String res = "";
         try {
-            stackOverFlowClient.getDTOStackOverflow("78056316");
+            gitHubClient.getDTOGitHub("aleckbb", "test");
         } catch (RuntimeException e) {
             res = e.getMessage();
         }
