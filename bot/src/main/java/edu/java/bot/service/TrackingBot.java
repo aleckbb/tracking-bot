@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class TrackingBot extends TelegramBot {
 
+
     public TrackingBot(String botToken) {
         super(botToken);
     }

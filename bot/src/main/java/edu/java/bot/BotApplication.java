@@ -1,5 +1,6 @@
-package edu.java.bot.configuration;
+package edu.java.bot;
 
+import edu.java.bot.configuration.ApplicationConfig;
 import edu.java.bot.service.TrackingBot;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ public class BotApplication {
 
     @PostConstruct
     public void runBot() {
-        TrackingBot bot = new TrackingBot(applicationConfig.telegramToken());
+        TrackingBot bot = new TrackingBot(applicationConfig.getTelegramToken());
         bot.run();
     }
 }
