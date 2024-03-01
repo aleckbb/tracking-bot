@@ -16,7 +16,6 @@ public class TrackingBot extends TelegramBot {
     private final Dialog dialog = new Dialog();
     private final ArrayList<User> users = new ArrayList<>();
 
-
     public void run() {
         this.setUpdatesListener(updates -> {
                 updates.forEach(update -> execute(dialog.onUpdateReceived(update, users)));

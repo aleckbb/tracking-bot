@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 public class Dialog {
     public SendMessage onUpdateReceived(Update update, ArrayList<User> users) {
         SendMessage message = new SendMessage(0, "");
+
         if (update != null && update.message() != null) {
             long id = update.message().chat().id();
             User user = getUser(id, users);
@@ -29,16 +30,16 @@ public class Dialog {
                         message = help(id, users);
                     }
                     case "/track" -> {
-                        message = track(id, users, null);
+                        message = track(id, users);
                     }
                     case "/untrack" -> {
-                        message = untrack(id, users, null);
+                        message = untrack(id, users);
                     }
                     case "/list" -> {
-                        message = list(update.message().chat().id(), users);
+                        message = list(id, users);
                     }
                     default -> {
-                        message = new SendMessage(update.message().chat().id(), "Я не знаю такой команды!");
+                        message = new SendMessage(id, "Я не знаю такой команды!");
                     }
                 }
             }
@@ -96,38 +97,12 @@ public class Dialog {
         return message;
     }
 
-    public URL getLink(ArrayList<URL> urls, URL newURL) {
-        for (URL url : urls) {
-            if (url.toString().equals(newURL.toString())) {
-                return url;
-            }
-        }
-        return null;
-    }
-
-    public boolean hasURL(ArrayList<URL> urls, URL newURL) {
-        for (URL url : urls) {
-            if (url.toString().equals(newURL.toString())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public User getUser(long id, ArrayList<User> users) {
-        for (User user : users) {
-            if (user.id() == id) {
-                return user;
-            }
-        }
-        return null;
-    }
-
     public SendMessage start(Chat chat, ArrayList<User> users) {
         Long id = chat.id();
         User user = getUser(id, users);
         if (user != null) {
-            return new SendMessage(user.id(), "Вы уже зарегистрированы!");
+            SendMessage message = new SendMessage(user.id(), "Вы уже зарегистрированы!");
+            return message;
         }
         String name = chat.firstName();
         users.add(new User(name, id, new ArrayList<URL>(), null));
@@ -144,17 +119,18 @@ public class Dialog {
             /list -- показать список отслеживаемых ссылок""");
     }
 
-    public SendMessage track(long id, ArrayList<User> users, Boolean waitLink) {
+    public SendMessage track(long id, ArrayList<User> users) {
         User user = getUser(id, users);
         if (user != null) {
             user.setWaitLink(true);
-            return new SendMessage(user.id(), "Введите ссылку!");
+            SendMessage message = new SendMessage(user.id(), "Введите ссылку!");
+            return message;
         } else {
             return new SendMessage(id, "Вы не зарегистрированы!");
         }
     }
 
-    public SendMessage untrack(long id, ArrayList<User> users, Boolean waitLink) {
+    public SendMessage untrack(long id, ArrayList<User> users) {
         User user = getUser(id, users);
         if (user != null) {
             if (user.tracks().isEmpty()) {
@@ -185,5 +161,32 @@ public class Dialog {
         } else {
             return new SendMessage(id, "Вы не зарегистрированы!");
         }
+    }
+
+    public URL getLink(ArrayList<URL> urls, URL newURL) {
+        for (URL url : urls) {
+            if (url.toString().equals(newURL.toString())) {
+                return url;
+            }
+        }
+        return null;
+    }
+
+    public boolean hasURL(ArrayList<URL> urls, URL newURL) {
+        for (URL url : urls) {
+            if (url.toString().equals(newURL.toString())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public User getUser(long id, ArrayList<User> users) {
+        for (User user : users) {
+            if (user.id() == id) {
+                return user;
+            }
+        }
+        return null;
     }
 }
