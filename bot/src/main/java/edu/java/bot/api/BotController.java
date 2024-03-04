@@ -28,7 +28,7 @@ public class BotController {
         ),
         @ApiResponse(
             responseCode = "400",
-            description = " Некорректные параметры запроса",
+            description = "Некорректные параметры запроса",
             content = {
                 @Content(
                     mediaType = "application/json",

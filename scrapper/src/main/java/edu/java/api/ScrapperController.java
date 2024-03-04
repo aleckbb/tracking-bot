@@ -39,7 +39,7 @@ public class ScrapperController {
         )
     })
     @PostMapping("/tg-chat/{id}")
-    public String chatReg(@PathVariable int id) {
+    public String chatReg(@PathVariable long id) {
         return "Чат зарегистрирован!";
     }
 
@@ -68,7 +68,7 @@ public class ScrapperController {
         )
     })
     @DeleteMapping("/tg-chat/{id}")
-    public String chatDel(@PathVariable int id) {
+    public String chatDel(@PathVariable long id) {
         return "Чат удалён!";
     }
 
@@ -92,7 +92,7 @@ public class ScrapperController {
         )
     })
     @GetMapping("/links")
-    public String getLinks(@RequestHeader(name = "Tg-Chat-Id") int id) {
+    public String getLinks(@RequestHeader(name = "Tg-Chat-Id") long id) {
         return "Ссылки успешно получены!";
     }
 
@@ -117,7 +117,7 @@ public class ScrapperController {
     })
     @PostMapping("/links")
     public String addLink(
-        @RequestHeader(name = "Tg-Chat-Id") int id,
+        @RequestHeader(name = "Tg-Chat-Id") long id,
         @RequestBody(required = true) AddLinkRequest addLinkRequest
     ) {
         return "Ссылка успешно добавлена!";
@@ -151,8 +151,8 @@ public class ScrapperController {
         )
     })
     @DeleteMapping("/links")
-    public String addLink(
-        @RequestHeader(name = "Tg-Chat-Id") int id,
+    public String delLink(
+        @RequestHeader(name = "Tg-Chat-Id") long id,
         @RequestBody(required = true) RemoveLinkRequest removeLinkRequest
     ) {
         return "Ссылка успешно убрана!";
