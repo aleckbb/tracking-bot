@@ -1,16 +1,17 @@
 package edu.java.scrapper;
 
-import edu.java.scrapper.IntegrationTest;
-import org.junit.Test;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import org.junit.Test;
+import org.junit.jupiter.api.DisplayName;
 import static org.junit.Assert.assertEquals;
 
 public class MigrationTest extends IntegrationTest {
 
     @Test
-    public void chatTableTest() throws SQLException {
+    @DisplayName("Проверка доступа к таблице chat")
+    public void test1() throws SQLException {
         try (Connection connection = POSTGRES.createConnection("")) {
             PreparedStatement sqlQuery = connection.prepareStatement("SELECT * FROM chat");
             String actualResult = sqlQuery.executeQuery().getMetaData().getColumnName(1);
@@ -19,7 +20,8 @@ public class MigrationTest extends IntegrationTest {
     }
 
     @Test
-    public void linkTableTest() throws SQLException {
+    @DisplayName("Проверка доступа к таблице link")
+    public void test2() throws SQLException {
         try (Connection connection = POSTGRES.createConnection("")) {
             PreparedStatement sqlQuery = connection.prepareStatement("SELECT * FROM link");
             String firstColumn = sqlQuery.executeQuery().getMetaData().getColumnName(1);
@@ -32,7 +34,8 @@ public class MigrationTest extends IntegrationTest {
     }
 
     @Test
-    public void connectionTableTest() throws SQLException {
+    @DisplayName("Проверка доступа к связующей таблице")
+    public void test3() throws SQLException {
         try (Connection connection = POSTGRES.createConnection("")) {
             PreparedStatement sqlQuery = connection.prepareStatement("SELECT * FROM chat_link");
             String firstColumn = sqlQuery.executeQuery().getMetaData().getColumnName(1);
