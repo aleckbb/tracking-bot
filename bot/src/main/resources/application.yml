@@ -1,5 +1,5 @@
 app:
-  telegram-token: unset
+  telegram-token: 6378714764:AAE3fqaly7DTcPcP_NegirJ-UQeK2CeksJg
 
 spring:
   application:
@@ -12,3 +12,9 @@ server:
 
 logging:
   config: classpath:log4j2-plain.xml
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui
+
+base-url-scrapper: "https://localhost:8090"
