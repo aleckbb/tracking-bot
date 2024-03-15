@@ -10,14 +10,14 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-@RestController
 public class StackOverFlowClient {
-    @Autowired
-    @Qualifier("StackOverFlowClient")
-    WebClient webClient;
+    private final WebClient webClient;
 
-    @GetMapping("/questions/{ids}")
-    public DTOStackOverflow getDTOStackOverflow(@PathVariable String ids) {
+    public StackOverFlowClient(WebClient.Builder builder, String url) {
+        this.webClient = builder.baseUrl(url).build();
+    }
+
+    public DTOStackOverflow getDTOStackOverflow(String ids) {
         return webClient.get()
             .uri("/questions/{ids}?site=stackoverflow", ids)
             .retrieve()
