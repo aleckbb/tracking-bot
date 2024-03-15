@@ -26,7 +26,8 @@ public class ClientConfiguration {
     @Bean("BotClient")
     public BotClient getBotClient(
         WebClient.Builder builder,
-        @Value("${base-url-bot}") String url) {
+        @Value("${base-url-bot}") String url
+    ) {
         return new BotClient(builder, url);
     }
 }

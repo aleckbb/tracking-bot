@@ -4,8 +4,6 @@ import edu.java.models.Request.AddLinkRequest;
 import edu.java.models.Request.RemoveLinkRequest;
 import edu.java.models.Response.LinkResponse;
 import edu.java.models.Response.ListLinksResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
@@ -19,7 +17,7 @@ public class ScrapperClient {
     private final WebClient webClient;
 
     public ScrapperClient(WebClient.Builder builder, String url) {
-        this.webClient = builder.baseUrl(url).build();;
+        this.webClient = builder.baseUrl(url).build();
     }
 
     public void chatReg(long chatId) {
@@ -28,9 +26,12 @@ public class ScrapperClient {
             .retrieve()
             .onStatus(
                 HttpStatusCode::is4xxClientError,
-                error -> Mono.error(new RuntimeException("Chat id is not found")))
-            .onStatus(HttpStatusCode::is5xxServerError,
-                error -> Mono.error(new RuntimeException("Server is not responding")))
+                error -> Mono.error(new RuntimeException("Chat id is not found"))
+            )
+            .onStatus(
+                HttpStatusCode::is5xxServerError,
+                error -> Mono.error(new RuntimeException("Server is not responding"))
+            )
             .bodyToMono(String.class)
             .block();
     }
@@ -41,9 +42,12 @@ public class ScrapperClient {
             .retrieve()
             .onStatus(
                 HttpStatusCode::is4xxClientError,
-                error -> Mono.error(new RuntimeException("Chat id is not found")))
-            .onStatus(HttpStatusCode::is5xxServerError,
-                error -> Mono.error(new RuntimeException("Server is not responding")))
+                error -> Mono.error(new RuntimeException("Chat id is not found"))
+            )
+            .onStatus(
+                HttpStatusCode::is5xxServerError,
+                error -> Mono.error(new RuntimeException("Server is not responding"))
+            )
             .bodyToMono(String.class)
             .block();
     }
@@ -55,9 +59,12 @@ public class ScrapperClient {
             .retrieve()
             .onStatus(
                 HttpStatusCode::is4xxClientError,
-                error -> Mono.error(new RuntimeException("Chat id is not found")))
-            .onStatus(HttpStatusCode::is5xxServerError,
-                error -> Mono.error(new RuntimeException("Server is not responding")))
+                error -> Mono.error(new RuntimeException("Chat id is not found"))
+            )
+            .onStatus(
+                HttpStatusCode::is5xxServerError,
+                error -> Mono.error(new RuntimeException("Server is not responding"))
+            )
             .bodyToMono(ListLinksResponse.class)
             .block();
     }
@@ -71,9 +78,12 @@ public class ScrapperClient {
             .retrieve()
             .onStatus(
                 HttpStatusCode::is4xxClientError,
-                error -> Mono.error(new RuntimeException("Link is not found")))
-            .onStatus(HttpStatusCode::is5xxServerError,
-                error -> Mono.error(new RuntimeException("Server is not responding")))
+                error -> Mono.error(new RuntimeException("Link is not found"))
+            )
+            .onStatus(
+                HttpStatusCode::is5xxServerError,
+                error -> Mono.error(new RuntimeException("Server is not responding"))
+            )
             .bodyToMono(LinkResponse.class)
             .block();
     }
@@ -87,9 +97,12 @@ public class ScrapperClient {
             .retrieve()
             .onStatus(
                 HttpStatusCode::is4xxClientError,
-                error -> Mono.error(new RuntimeException("Link is not found")))
-            .onStatus(HttpStatusCode::is5xxServerError,
-                error -> Mono.error(new RuntimeException("Server is not responding")))
+                error -> Mono.error(new RuntimeException("Link is not found"))
+            )
+            .onStatus(
+                HttpStatusCode::is5xxServerError,
+                error -> Mono.error(new RuntimeException("Server is not responding"))
+            )
             .bodyToMono(LinkResponse.class)
             .block();
     }

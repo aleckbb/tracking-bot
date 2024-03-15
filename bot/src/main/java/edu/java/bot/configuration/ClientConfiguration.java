@@ -11,7 +11,8 @@ public class ClientConfiguration {
     @Bean("ScrapperClient")
     public ScrapperClient getScrapperClient(
         WebClient.Builder builder,
-        @Value("${base-url-scrapper}") String url) {
+        @Value("${base-url-scrapper}") String url
+    ) {
         return new ScrapperClient(builder, url);
     }
 }
