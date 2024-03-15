@@ -1,8 +1,6 @@
 package edu.java.botclient;
 
 import edu.java.models.Request.LinkUpdate;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -11,9 +9,11 @@ import reactor.core.publisher.Mono;
 
 public class BotClient {
 
-    @Autowired
-    @Qualifier("BotClient")
-    WebClient webClient;
+    private final WebClient webClient;
+
+    public BotClient(WebClient.Builder builder, String url) {
+        this.webClient = builder.baseUrl(url).build();
+    }
 
     public void sendUpdate(int id, String url, String description, long[] tgChatIds) {
         webClient.post()
@@ -23,9 +23,12 @@ public class BotClient {
             .retrieve()
             .onStatus(
                 HttpStatusCode::is4xxClientError,
-                error -> Mono.error(new RuntimeException("Incorrect query parameters")))
-            .onStatus(HttpStatusCode::is5xxServerError,
-                error -> Mono.error(new RuntimeException("Server is not responding")))
+                error -> Mono.error(new RuntimeException("Incorrect query parameters"))
+            )
+            .onStatus(
+                HttpStatusCode::is5xxServerError,
+                error -> Mono.error(new RuntimeException("Server is not responding"))
+            )
             .bodyToMono(String.class)
             .block();
     }
