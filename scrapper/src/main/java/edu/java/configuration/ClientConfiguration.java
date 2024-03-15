@@ -16,4 +16,9 @@ public class ClientConfiguration {
     public WebClient getStackOverFlowClient(@Value("${app.base-url-stackoverflow}") String url) {
         return WebClient.builder().baseUrl(url).build();
     }
+
+    @Bean("BotClient")
+    public WebClient getBotClient(@Value("${base-url-bot}") String url) {
+        return WebClient.builder().baseUrl(url).build();
+    }
 }
