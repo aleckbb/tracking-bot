@@ -15,7 +15,10 @@ public class ClientConfiguration {
     }
 
     @Bean("StackOverFlowClient")
-    public StackOverFlowClient getStackOverFlowClient(WebClient.Builder builder, @Value("${app.base-url-stackoverflow}") String url) {
+    public StackOverFlowClient getStackOverFlowClient(
+        WebClient.Builder builder,
+        @Value("${app.base-url-stackoverflow}") String url
+    ) {
         return new StackOverFlowClient(builder, url);
     }
 }
