@@ -21,4 +21,9 @@ public class ClientConfiguration {
     ) {
         return new StackOverFlowClient(builder, url);
     }
+
+    @Bean("BotClient")
+    public WebClient getBotClient(@Value("${base-url-bot}") String url) {
+        return WebClient.builder().baseUrl(url).build();
+    }
 }
