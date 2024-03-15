@@ -15,9 +15,12 @@ import reactor.core.publisher.Mono;
 
 @SuppressWarnings("MultipleStringLiterals")
 public class ScrapperClient {
-    @Autowired
-    @Qualifier("ScrapperClient")
-    WebClient webClient;
+
+    private final WebClient webClient;
+
+    public ScrapperClient(WebClient.Builder builder, String url) {
+        this.webClient = builder.baseUrl(url).build();;
+    }
 
     public void chatReg(long chatId) {
         webClient.post()

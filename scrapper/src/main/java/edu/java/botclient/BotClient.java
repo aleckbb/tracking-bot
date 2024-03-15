@@ -11,9 +11,11 @@ import reactor.core.publisher.Mono;
 
 public class BotClient {
 
-    @Autowired
-    @Qualifier("BotClient")
-    WebClient webClient;
+    private final WebClient webClient;
+
+    public BotClient(WebClient.Builder builder, String url) {
+        this.webClient = builder.baseUrl(url).build();;
+    }
 
     public void sendUpdate(int id, String url, String description, long[] tgChatIds) {
         webClient.post()
