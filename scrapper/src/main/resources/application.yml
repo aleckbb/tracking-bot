@@ -15,6 +15,11 @@ spring:
     enabled: false
   autoconfigure:
     exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: postgres
+    url: jdbc:postgresql://localhost:5432/scrapper
 
 server:
   port: 8080
@@ -27,3 +32,4 @@ springdoc:
     path: /swagger-ui
 
 base-url-bot: "https://localhost:8080"
+
