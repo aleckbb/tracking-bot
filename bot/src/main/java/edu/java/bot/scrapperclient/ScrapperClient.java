@@ -71,8 +71,7 @@ public class ScrapperClient {
 
     public LinkResponse addLink(Long chatId, String link) {
         return webClient.post()
-            .uri("/links")
-            .header("Tg-Chat-Id", chatId.toString())
+            .uri("/links", chatId)
             .contentType(MediaType.APPLICATION_JSON)
             .body(BodyInserters.fromValue(new AddLinkRequest(link)))
             .retrieve()

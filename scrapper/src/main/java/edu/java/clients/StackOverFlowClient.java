@@ -1,6 +1,6 @@
 package edu.java.clients;
 
-import edu.java.dtoClasses.DTOStackOverflow;
+import edu.java.dtoClasses.sof.DTOStackOverflow;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;

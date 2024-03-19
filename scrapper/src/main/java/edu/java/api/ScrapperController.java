@@ -14,11 +14,10 @@ import edu.java.service.interfaces.LinkService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.util.List;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @SuppressWarnings("RegexpSinglelineJava")
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RestController
 public class ScrapperController {
     private final ChatService chatService;
@@ -52,12 +51,8 @@ public class ScrapperController {
     })
 
     @PostMapping("/tg-chat/{id}")
-    public void chatReg(@PathVariable long id, String username) {
-        try {
-            chatService.register(id, username);
-        } catch (RepeatedRegistrationException e) {
-            System.out.println(e.getMessage());
-        }
+    public void chatReg(@PathVariable long id, String username) throws RepeatedRegistrationException {
+        chatService.register(id, username);
     }
 
     @Operation(summary = "Удалить чат")
@@ -85,37 +80,42 @@ public class ScrapperController {
         )
     })
     @DeleteMapping("/tg-chat/{id}")
-    public void chatDel(@PathVariable long id) {
-        try {
-            chatService.unregister(id);
-        } catch (NotExistException e) {
-            System.out.println(e.getMessage());
-        }
+    public void chatDel(@PathVariable long id) throws NotExistException {
+        chatService.unregister(id);
     }
-
 
     @Operation(summary = "Получить все отслеживаемые ссылки")
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "200",
             description = "Ссылки успешно получены",
-            content = @Content(
+            content = {@Content(
                 mediaType = "application/json",
                 schema = @Schema(implementation = ListLinksResponse.class)
-            )
+            )}
         ),
         @ApiResponse(
             responseCode = "400",
             description = "Некорректные параметры запроса",
-            content = @Content(
+            content = {@Content(
                 mediaType = "application/json",
                 schema = @Schema(implementation = ApiErrorResponse.class)
-            )
+            )}
         )
     })
     @GetMapping("/links")
-    public List<DTOLink> getLinks(@RequestHeader(name = "Tg-Chat-Id") long id) {
-        return linkService.listAll(id);
+    public ListLinksResponse getLinks(@RequestHeader(name = "Tg-Chat-Id") long id) throws NotExistException {
+        List<DTOLink> links = linkService.listAll(id);
+        if (links.isEmpty()) {
+            throw new NotExistException("Вы не отслеживаете ни одной ссылки!");
+        }
+        LinkResponse[] res = new LinkResponse[links.size()];
+        int i = 0;
+        for (DTOLink link : links) {
+            res[i] = new LinkResponse(id, link.url());
+            i++;
+        }
+        return new ListLinksResponse(res, res.length);
     }
 
     @Operation(summary = "Добавить отслеживание ссылки")
@@ -123,31 +123,28 @@ public class ScrapperController {
         @ApiResponse(
             responseCode = "200",
             description = "Ссылка успешно добавлена",
-            content = @Content(
+            content = {@Content(
                 mediaType = "application/json",
                 schema = @Schema(implementation = LinkResponse.class)
-            )
+            )}
         ),
         @ApiResponse(
             responseCode = "400",
             description = "Некорректные параметры запроса",
-            content = @Content(
+            content = {@Content(
                 mediaType = "application/json",
                 schema = @Schema(implementation = ApiErrorResponse.class)
-            )
+            )}
         )
     })
     @PostMapping("/links")
-    public void addLink(
+    public LinkResponse addLink(
         @RequestHeader(name = "Tg-Chat-Id") long id,
-        @RequestParam/*@RequestBody(required = true)*/ AddLinkRequest addLinkRequest,
-        String username
-    ) {
-        try {
-            linkService.add(id, addLinkRequest.link(), username);
-        } catch (AlreadyExistException e) {
-            System.out.println(e.getMessage());
-        }
+        @RequestParam String username,
+        AddLinkRequest addLinkRequest
+    ) throws AlreadyExistException {
+        linkService.add(id, addLinkRequest.link(), username);
+        return new LinkResponse(id, addLinkRequest.link());
     }
 
     @Operation(summary = "Убрать отслеживание ссылки")
@@ -178,14 +175,11 @@ public class ScrapperController {
         )
     })
     @DeleteMapping("/links")
-    public void delLink(
+    public LinkResponse delLink(
         @RequestHeader(name = "Tg-Chat-Id") long id,
-        @RequestBody(required = true) RemoveLinkRequest removeLinkRequest
-    ) {
-        try {
-            linkService.remove(id, removeLinkRequest.link());
-        } catch (NotExistException e) {
-            System.out.println(e.getMessage());
-        }
+        RemoveLinkRequest removeLinkRequest
+    ) throws NotExistException {
+        linkService.remove(id, removeLinkRequest.link());
+        return new LinkResponse(id, removeLinkRequest.link());
     }
 }

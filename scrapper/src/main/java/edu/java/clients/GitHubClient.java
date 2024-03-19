@@ -1,6 +1,6 @@
 package edu.java.clients;
 
-import edu.java.dtoClasses.DTOGitHub;
+import edu.java.dtoClasses.github.DTOGitHub;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;

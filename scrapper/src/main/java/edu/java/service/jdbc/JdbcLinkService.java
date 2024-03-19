@@ -52,15 +52,19 @@ public class JdbcLinkService implements LinkService {
             throw new NotExistException("Такой ссылки не отслеживается");
         }
         List<DTOSub> links = chatLinkRepository.findByChatId(chatId);
+        boolean isLinkExist = false;
         for (DTOSub link : links) {
             List<DTOSub> subs = chatLinkRepository.findByLinkId(link.linkId());
             if (linkRepository.findByUrl(url).linkId().equals(link.linkId())) {
+                isLinkExist = true;
                 chatLinkRepository.remove(new DTOSub(chatId, link.linkId()));
                 if (subs.size() == 1) {
                     linkRepository.remove(new DTOLink(link.linkId(), null, null, null));
                 }
             }
         }
+        if(!isLinkExist)
+            throw new NotExistException("Такой ссылки не отслеживается");
     }
 
     @Override
