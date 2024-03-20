@@ -2,21 +2,19 @@ package edu.java.scrapper.jdbc;
 
 import edu.java.dtoClasses.jdbc.DTOChat;
 import edu.java.repos.chat.ChatRepositoryImpl;
+import edu.java.repos.mappers.ChatMapper;
+import edu.java.scrapper.IntegrationTest;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import edu.java.repos.mappers.ChatMapper;
-import org.apache.kafka.test.IntegrationTest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import static org.junit.Assert.assertEquals;
 
-@SpringBootTest
-class ChatRepositoryImplTest implements IntegrationTest {
+public class ChatRepositoryImplTest extends IntegrationTest {
     @Autowired
     private ChatRepositoryImpl chatRepository;
 
@@ -70,7 +68,7 @@ class ChatRepositoryImplTest implements IntegrationTest {
         chatRepository.add(chat);
         assertEquals(1, chatRepository.findAll().size());
         assertEquals(
-            "[DTOChat[chatId=1, name=Alexey, createdAt=2024-03-17T21:31Z]]",
+            "[DTOChat[chatId=1, name=Alexey, createdAt=2024-03-17T18:31Z]]",
             chatRepository.findAll().toString()
         );
         var expected = jdbcClient.sql("SELECT * FROM chat")

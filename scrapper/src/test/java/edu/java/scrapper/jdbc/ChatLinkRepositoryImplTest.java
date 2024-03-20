@@ -7,20 +7,18 @@ import edu.java.repos.chat.ChatRepositoryImpl;
 import edu.java.repos.chatLink.ChatLinkRepositoryImpl;
 import edu.java.repos.link.LinkRepositoryImpl;
 import edu.java.repos.mappers.ChatLinkMapper;
+import edu.java.scrapper.IntegrationTest;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import org.apache.kafka.test.IntegrationTest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import static org.junit.Assert.assertEquals;
 
-@SpringBootTest
-class ChatLinkRepositoryImplTest implements IntegrationTest {
+public class ChatLinkRepositoryImplTest extends IntegrationTest {
     @Autowired
     private ChatRepositoryImpl chatRepository;
     @Autowired

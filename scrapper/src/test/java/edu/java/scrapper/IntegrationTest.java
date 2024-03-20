@@ -11,13 +11,17 @@ import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.DirectoryResourceAccessor;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+//@DirtiesContext
+@SpringBootTest
 @Testcontainers
 public abstract class IntegrationTest {
     public static PostgreSQLContainer<?> POSTGRES;
@@ -32,7 +36,8 @@ public abstract class IntegrationTest {
         runMigrations(POSTGRES);
     }
 
-    private static void runMigrations(JdbcDatabaseContainer<?> c) {
+
+    public static void runMigrations(JdbcDatabaseContainer<?> c) {
         Path pathToChangeLog = new File(".")
             .toPath()
             .toAbsolutePath()
