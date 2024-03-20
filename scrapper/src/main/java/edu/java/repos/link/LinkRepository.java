@@ -15,7 +15,7 @@ public interface LinkRepository {
 
     DTOLink findByUrl(String url);
 
-    void updateUpdateTime(long linkId, OffsetDateTime time);
+    void updateData(long linkId, OffsetDateTime time, String data);
 
     void updateCheckTime(long linkId, OffsetDateTime time);
 

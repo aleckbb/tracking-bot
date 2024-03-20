@@ -4,7 +4,8 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import edu.java.ScrapperApplication;
-import edu.java.dtoClasses.github.DTOGitHub;
+import edu.java.dtoClasses.github.GitHub;
+import edu.java.dtoClasses.github.Repository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -43,8 +44,16 @@ class GitHubClientTest {
                     .withBody("{\"name\": \"mock\"}")
                     .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE))
         );
-        DTOGitHub dtoGitHub = gitHubClient.getDTOGitHub("aleckbb", "test");
-        assertEquals("mock", dtoGitHub.repoName());
+        wireMockExtension.stubFor(
+            WireMock.get("/repos/aleckbb/test/branches")
+                .willReturn(aResponse().withStatus(200))
+        );
+        wireMockExtension.stubFor(
+            WireMock.get("/repos/aleckbb/test/pulls")
+                .willReturn(aResponse().withStatus(200))
+        );
+        GitHub dtoGitHub = gitHubClient.getGitHub("aleckbb", "test");
+        assertEquals("mock", dtoGitHub.repository().repoName());
     }
 
     @Test
@@ -57,7 +66,7 @@ class GitHubClientTest {
         );
         String res = "";
         try {
-            gitHubClient.getDTOGitHub("aleckbb", "test");
+            gitHubClient.getGitHub("aleckbb", "test");
         } catch (RuntimeException e) {
             res = e.getMessage();
         }
@@ -75,7 +84,7 @@ class GitHubClientTest {
         );
         String res = "";
         try {
-            gitHubClient.getDTOGitHub("aleckbb", "test");
+            gitHubClient.getGitHub("aleckbb", "test");
         } catch (RuntimeException e) {
             res = e.getMessage();
         }

@@ -41,7 +41,7 @@ public class JdbcChatService implements ChatService {
             List<DTOSub> subs = chatLinkRepository.findByLinkId(link.linkId());
             chatLinkRepository.remove(new DTOSub(chatId, link.linkId()));
             if (subs.size() == 1) {
-                linkRepository.remove(new DTOLink(link.linkId(), null, null, null));
+                linkRepository.remove(new DTOLink(link.linkId(), null, null, null, null, null));
             }
         }
         chatRepository.remove(new DTOChat(chatId, null, null));

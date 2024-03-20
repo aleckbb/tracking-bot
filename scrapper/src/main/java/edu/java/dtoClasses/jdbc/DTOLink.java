@@ -6,6 +6,8 @@ public record DTOLink(
     Long linkId,
     String url,
     OffsetDateTime updateAt,
-    OffsetDateTime checkAt
+    OffsetDateTime checkAt,
+    String linkType,
+    String data
 ) {
 }

@@ -4,7 +4,7 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import edu.java.ScrapperApplication;
-import edu.java.dtoClasses.sof.DTOStackOverflow;
+import edu.java.dtoClasses.sof.StackOverflow;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @WireMockTest
 class StackOverFlowClientTest {
     @Autowired
-    StackOverFlowClient stackOverFlowClient;
+    StackOverflowClient stackOverFlowClient;
 
     @RegisterExtension
     static WireMockExtension wireMockExtension = WireMockExtension.newInstance()
@@ -39,11 +39,11 @@ class StackOverFlowClientTest {
         wireMockExtension.stubFor(
             WireMock.get("/questions/78056316?site=stackoverflow")
                 .willReturn(aResponse()
-                    .withBody("{\"items\":[{\"question_id\":11111111}]}")
+                    .withBody("{\"items\":[{\"title\":11111111}]}")
                     .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE))
         );
-        DTOStackOverflow dtoStackOverflow = stackOverFlowClient.getDTOStackOverflow("78056316");
-        assertEquals("11111111", dtoStackOverflow.items().getFirst().id());
+        StackOverflow dtoStackOverflow = stackOverFlowClient.getStackOverflow("78056316");
+        assertEquals("11111111", dtoStackOverflow.items().getFirst().title());
     }
 
     @Test
@@ -56,7 +56,7 @@ class StackOverFlowClientTest {
         );
         String res = "";
         try {
-            stackOverFlowClient.getDTOStackOverflow("78056316");
+            stackOverFlowClient.getStackOverflow("78056316");
         } catch (RuntimeException e) {
             res = e.getMessage();
         }
@@ -74,7 +74,7 @@ class StackOverFlowClientTest {
         );
         String res = "";
         try {
-            stackOverFlowClient.getDTOStackOverflow("78056316");
+            stackOverFlowClient.getStackOverflow("78056316");
         } catch (RuntimeException e) {
             res = e.getMessage();
         }

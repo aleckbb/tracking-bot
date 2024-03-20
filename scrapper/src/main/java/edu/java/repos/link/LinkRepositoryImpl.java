@@ -13,7 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
     @Autowired private JdbcClient jdbcClient;
 
     @Transactional @Override public void add(DTOLink link) {
-        jdbcClient.sql("INSERT INTO link VALUES(DEFAULT, ?, ?, ?)").params(link.url(), link.updateAt(), link.checkAt())
+        jdbcClient.sql("INSERT INTO link VALUES(DEFAULT, ?, ?, ?, ?, ?)")
+            .params(link.url(), link.updateAt(), link.checkAt(), link.linkType(), link.data())
             .update();
     }
 
@@ -33,8 +34,9 @@ import org.springframework.transaction.annotation.Transactional;
         }
     }
 
-    @Transactional @Override public void updateUpdateTime(long linkId, OffsetDateTime time) {
-        jdbcClient.sql("UPDATE link SET update_at=? WHERE link_id=?").param(time).param(linkId).update();
+    @Transactional @Override public void updateData(long linkId, OffsetDateTime time, String data) {
+        jdbcClient.sql("UPDATE link SET update_at=?, data=? WHERE link_id=?").param(time).param(data).param(linkId)
+            .update();
     }
 
     @Transactional @Override public void updateCheckTime(long linkId, OffsetDateTime time) {

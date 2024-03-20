@@ -1,20 +1,20 @@
 package edu.java.clients;
 
-import edu.java.dtoClasses.sof.DTOStackOverflow;
+import edu.java.dtoClasses.sof.StackOverflow;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-public class StackOverFlowClient {
+public class StackOverflowClient {
     private final WebClient webClient;
 
-    public StackOverFlowClient(WebClient.Builder builder, String url) {
+    public StackOverflowClient(WebClient.Builder builder, String url) {
         this.webClient = builder.baseUrl(url).build();
     }
 
-    public DTOStackOverflow getDTOStackOverflow(String ids) {
+    public StackOverflow getStackOverflow(String questionId) {
         return webClient.get()
-            .uri("/questions/{ids}?site=stackoverflow", ids)
+            .uri("/questions/{ids}?site=stackoverflow", questionId)
             .retrieve()
             .onStatus(
                 HttpStatusCode::is4xxClientError,
@@ -24,7 +24,7 @@ public class StackOverFlowClient {
                 HttpStatusCode::is5xxServerError,
                 error -> Mono.error(new RuntimeException("Server is not responding"))
             )
-            .bodyToMono(DTOStackOverflow.class)
+            .bodyToMono(StackOverflow.class)
             .block();
     }
 }

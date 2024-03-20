@@ -7,7 +7,8 @@ import edu.java.repos.chat.ChatRepositoryImpl;
 import edu.java.repos.chatLink.ChatLinkRepositoryImpl;
 import edu.java.repos.link.LinkRepositoryImpl;
 import edu.java.repos.mappers.ChatLinkMapper;
-import edu.java.repos.mappers.ChatMapper;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import org.apache.kafka.test.IntegrationTest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -16,11 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import static org.junit.Assert.assertEquals;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class ChatLinkRepositoryImplTest implements IntegrationTest {
@@ -62,7 +59,9 @@ class ChatLinkRepositoryImplTest implements IntegrationTest {
                 0,
                 0,
                 ZoneOffset.UTC
-            )
+            ),
+            "",
+            ""
         );
         chat = new DTOChat(
             1L,
@@ -79,6 +78,7 @@ class ChatLinkRepositoryImplTest implements IntegrationTest {
             )
         );
     }
+
     @Test
     @Transactional
     @Rollback
@@ -115,7 +115,7 @@ class ChatLinkRepositoryImplTest implements IntegrationTest {
         chatLinkRepository.add(sub);
         assertEquals(1, chatLinkRepository.findAll().size());
         assertEquals(
-            "[DTOSub[chatId=1, linkId="+ linkRepository.findByUrl(link.url()).linkId() +"]]",
+            "[DTOSub[chatId=1, linkId=" + linkRepository.findByUrl(link.url()).linkId() + "]]",
             chatLinkRepository.findAll().toString()
         );
         var expected = jdbcClient.sql("SELECT * FROM chat_link")

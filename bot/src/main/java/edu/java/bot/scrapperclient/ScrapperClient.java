@@ -32,7 +32,7 @@ public class ScrapperClient {
                 HttpStatusCode::is5xxServerError,
                 error -> Mono.error(new RuntimeException("Server is not responding"))
             )
-            .bodyToMono(String.class)
+            .bodyToMono(Void.class)
             .block();
     }
 
@@ -48,7 +48,7 @@ public class ScrapperClient {
                 HttpStatusCode::is5xxServerError,
                 error -> Mono.error(new RuntimeException("Server is not responding"))
             )
-            .bodyToMono(String.class)
+            .bodyToMono(Void.class)
             .block();
     }
 
