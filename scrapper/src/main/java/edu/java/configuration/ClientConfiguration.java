@@ -2,7 +2,7 @@ package edu.java.configuration;
 
 import edu.java.botclient.BotClient;
 import edu.java.clients.GitHubClient;
-import edu.java.clients.StackOverFlowClient;
+import edu.java.clients.StackOverflowClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,11 +16,11 @@ public class ClientConfiguration {
     }
 
     @Bean("StackOverFlowClient")
-    public StackOverFlowClient getStackOverFlowClient(
+    public StackOverflowClient getStackOverFlowClient(
         WebClient.Builder builder,
         @Value("${app.base-url-stackoverflow}") String url
     ) {
-        return new StackOverFlowClient(builder, url);
+        return new StackOverflowClient(builder, url);
     }
 
     @Bean("BotClient")

@@ -32,7 +32,7 @@ public class ScrapperClient {
                 HttpStatusCode::is5xxServerError,
                 error -> Mono.error(new RuntimeException("Server is not responding"))
             )
-            .bodyToMono(String.class)
+            .bodyToMono(Void.class)
             .block();
     }
 
@@ -48,7 +48,7 @@ public class ScrapperClient {
                 HttpStatusCode::is5xxServerError,
                 error -> Mono.error(new RuntimeException("Server is not responding"))
             )
-            .bodyToMono(String.class)
+            .bodyToMono(Void.class)
             .block();
     }
 
@@ -71,8 +71,7 @@ public class ScrapperClient {
 
     public LinkResponse addLink(Long chatId, String link) {
         return webClient.post()
-            .uri("/links")
-            .header("Tg-Chat-Id", chatId.toString())
+            .uri("/links", chatId)
             .contentType(MediaType.APPLICATION_JSON)
             .body(BodyInserters.fromValue(new AddLinkRequest(link)))
             .retrieve()

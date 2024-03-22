@@ -13,8 +13,11 @@ spring:
   liquibase:
     change-log: ../../../../migrations/master.xml
     enabled: false
-  autoconfigure:
-    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+  datasource:
+    driver_class_name: org.postgresql.Driver
+    username: postgres
+    password: postgres
+    url: jdbc:postgresql://localhost:5432/scrapper
 
 server:
   port: 8080
@@ -26,4 +29,5 @@ springdoc:
   swagger-ui:
     path: /swagger-ui
 
-base-url-bot: "https://localhost:8080"
+base-url-bot: "http://localhost:8090"
+

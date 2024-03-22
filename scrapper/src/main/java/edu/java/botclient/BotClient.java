@@ -15,7 +15,7 @@ public class BotClient {
         this.webClient = builder.baseUrl(url).build();
     }
 
-    public void sendUpdate(int id, String url, String description, long[] tgChatIds) {
+    public void sendUpdate(long id, String url, String description, long[] tgChatIds) {
         webClient.post()
             .uri("/updates")
             .contentType(MediaType.APPLICATION_JSON)
@@ -29,7 +29,7 @@ public class BotClient {
                 HttpStatusCode::is5xxServerError,
                 error -> Mono.error(new RuntimeException("Server is not responding"))
             )
-            .bodyToMono(String.class)
+            .bodyToMono(Void.class)
             .block();
     }
 }

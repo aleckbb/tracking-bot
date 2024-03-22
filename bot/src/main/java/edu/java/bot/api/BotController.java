@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
+import org.jboss.logging.Logger;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/updates")
 public class BotController {
+    static final Logger LOGGER = Logger.getLogger(BotController.class.getName());
+
     @Operation(summary = "Отправить обновление")
     @ApiResponses(value = {
         @ApiResponse(
@@ -37,9 +40,9 @@ public class BotController {
             }
         )
     })
-
     @PostMapping
     public String sendUpdate(@RequestBody LinkUpdate linkUpdate) {
+        LOGGER.info(linkUpdate);
         return "Обновление отправлено!";
     }
 }
