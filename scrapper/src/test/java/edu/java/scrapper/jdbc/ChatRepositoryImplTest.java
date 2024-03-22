@@ -25,16 +25,7 @@ public class ChatRepositoryImplTest extends IntegrationTest {
         chat = new DTOChat(
             1L,
             "Alexey",
-            OffsetDateTime.of(
-                2024,
-                3,
-                17,
-                18,
-                31,
-                0,
-                0,
-                ZoneOffset.UTC
-            )
+            OffsetDateTime.parse("2022-01-01T10:30:00+00:00")
         );
     }
 
@@ -65,7 +56,7 @@ public class ChatRepositoryImplTest extends IntegrationTest {
         chatRepository.add(chat);
         assertEquals(1, chatRepository.findAll().size());
         assertEquals(
-            "[DTOChat[chatId=1, name=Alexey, createdAt=2024-03-17T21:31Z]]",
+            "[DTOChat[chatId=1, name=Alexey, createdAt=2022-01-01T10:30Z]]",
             chatRepository.findAll().toString()
         );
     }

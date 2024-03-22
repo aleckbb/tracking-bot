@@ -23,8 +23,8 @@ public class LinkRepositoryImplTest extends IntegrationTest {
         link = new DTOLink(
             1L,
             "https://test",
-            OffsetDateTime.of(2024, 3, 17, 18, 31, 0, 0, ZoneOffset.UTC),
-            OffsetDateTime.of(2024, 3, 17, 19, 11, 0, 0, ZoneOffset.UTC),
+            OffsetDateTime.parse("2022-01-01T10:30:00+00:00"),
+            OffsetDateTime.parse("2022-01-01T10:30:00+00:00"),
             "",
             ""
         );
@@ -58,7 +58,7 @@ public class LinkRepositoryImplTest extends IntegrationTest {
         assertEquals(1, linkRepository.findAll().size());
         assertEquals(
             "[DTOLink[linkId=" + linkRepository.findByUrl(link.url()).linkId() +
-                ", url=https://test, updateAt=2024-03-17T21:31Z, checkAt=2024-03-17T22:11Z, linkType=, data=]]",
+                ", url=https://test, updateAt=2022-01-01T10:30Z, checkAt=2022-01-01T10:30Z, linkType=, data=]]",
             linkRepository.findAll().toString()
         );
     }

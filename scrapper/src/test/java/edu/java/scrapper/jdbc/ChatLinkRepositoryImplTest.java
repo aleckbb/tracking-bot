@@ -25,16 +25,7 @@ public class ChatLinkRepositoryImplTest extends IntegrationTest {
     @Autowired
     private ChatLinkRepositoryImpl chatLinkRepository;
 
-    private final OffsetDateTime time = OffsetDateTime.of(
-        2024,
-        3,
-        17,
-        18,
-        31,
-        0,
-        0,
-        ZoneOffset.UTC
-    );
+    private final OffsetDateTime time = OffsetDateTime.parse("2022-01-01T10:30:00+00:00");
     private final DTOChat chat = new DTOChat(
         1L,
         "Alexey",
