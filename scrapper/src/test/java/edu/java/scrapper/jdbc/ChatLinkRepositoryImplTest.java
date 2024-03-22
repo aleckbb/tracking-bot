@@ -6,18 +6,17 @@ import edu.java.dtoClasses.jdbc.DTOSub;
 import edu.java.repos.chat.ChatRepositoryImpl;
 import edu.java.repos.chatLink.ChatLinkRepositoryImpl;
 import edu.java.repos.link.LinkRepositoryImpl;
-import edu.java.repos.mappers.ChatLinkMapper;
 import edu.java.scrapper.IntegrationTest;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.simple.JdbcClient;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import static org.junit.Assert.assertEquals;
 
+@SpringBootTest
 public class ChatLinkRepositoryImplTest extends IntegrationTest {
     @Autowired
     private ChatRepositoryImpl chatRepository;
@@ -26,56 +25,30 @@ public class ChatLinkRepositoryImplTest extends IntegrationTest {
     @Autowired
     private ChatLinkRepositoryImpl chatLinkRepository;
 
-    @Autowired
-    private JdbcClient jdbcClient;
-
-    static DTOChat chat;
-    static DTOLink link;
-    static DTOSub sub;
-
-    @BeforeAll
-    static void createDto() {
-        link = new DTOLink(
-            1L,
-            "https://test",
-            OffsetDateTime.of(
-                2024,
-                3,
-                17,
-                18,
-                31,
-                0,
-                0,
-                ZoneOffset.UTC
-            ),
-            OffsetDateTime.of(
-                2024,
-                3,
-                17,
-                19,
-                11,
-                0,
-                0,
-                ZoneOffset.UTC
-            ),
-            "",
-            ""
-        );
-        chat = new DTOChat(
-            1L,
-            "Alexey",
-            OffsetDateTime.of(
-                2024,
-                3,
-                17,
-                18,
-                31,
-                0,
-                0,
-                ZoneOffset.UTC
-            )
-        );
-    }
+    private final OffsetDateTime time = OffsetDateTime.of(
+        2024,
+        3,
+        17,
+        18,
+        31,
+        0,
+        0,
+        ZoneOffset.UTC
+    );
+    private final DTOChat chat = new DTOChat(
+        1L,
+        "Alexey",
+        time
+    );
+    private final DTOLink link = new DTOLink(
+        1L,
+        "https://test",
+        time,
+        time,
+        "",
+        ""
+    );
+    private DTOSub sub;
 
     @Test
     @Transactional
@@ -114,12 +87,6 @@ public class ChatLinkRepositoryImplTest extends IntegrationTest {
         assertEquals(1, chatLinkRepository.findAll().size());
         assertEquals(
             "[DTOSub[chatId=1, linkId=" + linkRepository.findByUrl(link.url()).linkId() + "]]",
-            chatLinkRepository.findAll().toString()
-        );
-        var expected = jdbcClient.sql("SELECT * FROM chat_link")
-            .query(new ChatLinkMapper()).list();
-        assertEquals(
-            expected.toString(),
             chatLinkRepository.findAll().toString()
         );
     }

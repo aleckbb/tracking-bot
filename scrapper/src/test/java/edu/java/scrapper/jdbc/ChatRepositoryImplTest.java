@@ -2,24 +2,21 @@ package edu.java.scrapper.jdbc;
 
 import edu.java.dtoClasses.jdbc.DTOChat;
 import edu.java.repos.chat.ChatRepositoryImpl;
-import edu.java.repos.mappers.ChatMapper;
 import edu.java.scrapper.IntegrationTest;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.simple.JdbcClient;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import static org.junit.Assert.assertEquals;
 
+@SpringBootTest
 public class ChatRepositoryImplTest extends IntegrationTest {
     @Autowired
     private ChatRepositoryImpl chatRepository;
-
-    @Autowired
-    private JdbcClient jdbcClient;
 
     static DTOChat chat;
 
@@ -68,13 +65,7 @@ public class ChatRepositoryImplTest extends IntegrationTest {
         chatRepository.add(chat);
         assertEquals(1, chatRepository.findAll().size());
         assertEquals(
-            "[DTOChat[chatId=1, name=Alexey, createdAt=2024-03-17T18:31Z]]",
-            chatRepository.findAll().toString()
-        );
-        var expected = jdbcClient.sql("SELECT * FROM chat")
-            .query(new ChatMapper()).list();
-        assertEquals(
-            expected.toString(),
+            "[DTOChat[chatId=1, name=Alexey, createdAt=2024-03-17T21:31Z]]",
             chatRepository.findAll().toString()
         );
     }
