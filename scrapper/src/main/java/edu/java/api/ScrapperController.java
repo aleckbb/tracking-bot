@@ -52,7 +52,10 @@ public class ScrapperController {
     })
 
     @PostMapping("/tg-chat/{id}")
-    public void chatReg(@PathVariable long id, String username) throws RepeatedRegistrationException {
+    public void chatReg(
+        @PathVariable long id,
+        @RequestBody String username
+    ) throws RepeatedRegistrationException {
         chatService.register(id, username);
     }
 
@@ -141,7 +144,7 @@ public class ScrapperController {
     @PostMapping("/links")
     public LinkResponse addLink(
         @RequestHeader(name = "Tg-Chat-Id") long id,
-        @RequestParam String username,
+        @RequestHeader(name = "Username") String username,
         @RequestBody AddLinkRequest addLinkRequest
     ) throws AlreadyExistException {
         linkService.add(id, addLinkRequest.link(), username);

@@ -1,5 +1,8 @@
 package edu.java.bot.api;
 
+import com.pengrad.telegrambot.request.SendMessage;
+import edu.java.bot.service.Dialog;
+import edu.java.bot.service.TrackingBot;
 import edu.java.models.Request.LinkUpdate;
 import edu.java.models.Response.ApiErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,6 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
 import org.jboss.logging.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/updates")
 public class BotController {
+    @Autowired
+    private TrackingBot bot;
     static final Logger LOGGER = Logger.getLogger(BotController.class.getName());
 
     @Operation(summary = "Отправить обновление")
@@ -41,8 +47,9 @@ public class BotController {
         )
     })
     @PostMapping
-    public String sendUpdate(@RequestBody LinkUpdate linkUpdate) {
+    public void sendUpdate(@RequestBody LinkUpdate linkUpdate) {
         LOGGER.info(linkUpdate);
-        return "Обновление отправлено!";
+        for(long chatId : linkUpdate.tgChatIds())
+            bot.sendUpdate(new SendMessage(chatId, linkUpdate.description()));
     }
 }
