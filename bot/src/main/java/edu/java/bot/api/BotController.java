@@ -1,7 +1,6 @@
 package edu.java.bot.api;
 
 import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.service.Dialog;
 import edu.java.bot.service.TrackingBot;
 import edu.java.models.Request.LinkUpdate;
 import edu.java.models.Response.ApiErrorResponse;
@@ -49,7 +48,8 @@ public class BotController {
     @PostMapping
     public void sendUpdate(@RequestBody LinkUpdate linkUpdate) {
         LOGGER.info(linkUpdate);
-        for(long chatId : linkUpdate.tgChatIds())
+        for (long chatId : linkUpdate.tgChatIds()) {
             bot.sendUpdate(new SendMessage(chatId, linkUpdate.description()));
+        }
     }
 }

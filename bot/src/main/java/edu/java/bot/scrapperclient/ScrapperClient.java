@@ -1,7 +1,6 @@
 package edu.java.bot.scrapperclient;
 
 import edu.java.models.Request.AddLinkRequest;
-import edu.java.models.Request.LinkUpdate;
 import edu.java.models.Request.RemoveLinkRequest;
 import edu.java.models.Response.LinkResponse;
 import edu.java.models.Response.ListLinksResponse;
