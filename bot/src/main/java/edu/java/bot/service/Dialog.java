@@ -160,7 +160,7 @@ public class Dialog {
             return new SendMessage(id, "Вы не зарегистрированы!");
         } catch (Exception e) {
             try {
-               ListLinksResponse links = scrapperClient.getLinks(id);
+                ListLinksResponse links = scrapperClient.getLinks(id);
                 StringBuilder messageText = new StringBuilder();
                 int i = 1;
                 for (LinkResponse link : links.links()) {
