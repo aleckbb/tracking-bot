@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@SuppressWarnings("MultipleStringLiterals")
+@SuppressWarnings({"MultipleStringLiterals", "MagicNumber"})
 @Component
 public class Dialog {
     private final Pattern githubRegex = Pattern.compile("^https://github\\.com/[\\w-]+/[\\w-\\.@\\:~]+$");
