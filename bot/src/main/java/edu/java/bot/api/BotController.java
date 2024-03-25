@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class BotController {
     @Autowired
     private TrackingBot bot;
-    static final Logger LOGGER = Logger.getLogger(BotController.class.getName());
 
     @Operation(summary = "Отправить обновление")
     @ApiResponses(value = {
@@ -47,7 +46,6 @@ public class BotController {
     })
     @PostMapping
     public void sendUpdate(@RequestBody LinkUpdate linkUpdate) {
-        LOGGER.info(linkUpdate);
         for (long chatId : linkUpdate.tgChatIds()) {
             bot.sendUpdate(new SendMessage(chatId, linkUpdate.description()));
         }

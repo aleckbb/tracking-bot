@@ -6,6 +6,8 @@ import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.scrapperclient.ScrapperClient;
 import edu.java.models.Response.LinkResponse;
 import edu.java.models.Response.ListLinksResponse;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -50,7 +52,7 @@ public class Dialog {
                     case "/list" -> {
                         message = list(chat);
                     }
-                    default -> {
+                    case null, default -> {
                         message = new SendMessage(chat.id(), "Я не знаю такой команды!");
                     }
                 }
@@ -66,8 +68,7 @@ public class Dialog {
             waitMap.remove(id);
             message = new SendMessage(id, "Ввод ссылок отменён!");
         } else {
-            if (messageText.contains("https://github.com/") && githubRegex.matcher(messageText).find()
-                || messageText.contains("https://stackoverflow.com/") && sofRegex.matcher(messageText).find()) {
+            if (checkLink(messageText)) {
                 message = waitMap.get(id) ? addLink(chat, messageText) : delLink(chat, messageText);
                 waitMap.remove(id);
             } else {
@@ -76,6 +77,24 @@ public class Dialog {
             }
         }
         return message;
+    }
+
+    public boolean checkLink(String messageText) {
+        try {
+            if (messageText.contains("https://github.com/") && githubRegex.matcher(messageText).find()
+                || messageText.contains("https://stackoverflow.com/") && sofRegex.matcher(messageText).find()) {
+                URL link = new URL(messageText);
+                HttpURLConnection connection = (HttpURLConnection) link.openConnection();
+                connection.setRequestMethod("GET");
+                connection.connect();
+                if (connection.getResponseCode() == 200) {
+                    return true;
+                }
+            }
+            throw new Exception();
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public SendMessage addLink(Chat chat, String url) {
