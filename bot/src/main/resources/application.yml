@@ -1,5 +1,5 @@
 app:
-  telegram-token: 
+  telegram-token:
 
 spring:
   application:
@@ -17,4 +17,4 @@ springdoc:
   swagger-ui:
     path: /swagger-ui
 
-base-url-scrapper: "https://localhost:8090"
+base-url-scrapper: "http://localhost:8080"

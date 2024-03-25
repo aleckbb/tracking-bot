@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @SuppressWarnings("RegexpSinglelineJava")
@@ -52,7 +51,10 @@ public class ScrapperController {
     })
 
     @PostMapping("/tg-chat/{id}")
-    public void chatReg(@PathVariable long id, String username) throws RepeatedRegistrationException {
+    public void chatReg(
+        @PathVariable long id,
+        @RequestBody String username
+    ) throws RepeatedRegistrationException {
         chatService.register(id, username);
     }
 
@@ -141,7 +143,7 @@ public class ScrapperController {
     @PostMapping("/links")
     public LinkResponse addLink(
         @RequestHeader(name = "Tg-Chat-Id") long id,
-        @RequestParam String username,
+        @RequestHeader(name = "Username") String username,
         @RequestBody AddLinkRequest addLinkRequest
     ) throws AlreadyExistException {
         linkService.add(id, addLinkRequest.link(), username);

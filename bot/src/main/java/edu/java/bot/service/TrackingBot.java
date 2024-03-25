@@ -2,25 +2,31 @@ package edu.java.bot.service;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
-import edu.java.bot.user.User;
-import java.util.ArrayList;
+import com.pengrad.telegrambot.request.SendMessage;
+import edu.java.bot.scrapperclient.ScrapperClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class TrackingBot extends TelegramBot {
+    private final Dialog dialog;
 
-    public TrackingBot(String botToken) {
+    @Autowired
+    public TrackingBot(String botToken, ScrapperClient scrapperClient) {
         super(botToken);
+        this.dialog = new Dialog(scrapperClient);
     }
 
-    private final Dialog dialog = new Dialog();
-    private final ArrayList<User> users = new ArrayList<>();
 
     public void run() {
         this.setUpdatesListener(updates -> {
-                updates.forEach(update -> execute(dialog.onUpdateReceived(update, users)));
+                updates.forEach(update -> execute(dialog.onUpdateReceived(update)));
                 return UpdatesListener.CONFIRMED_UPDATES_ALL;
             }
         );
+    }
+
+    public void sendUpdate(SendMessage message) {
+        execute(message);
     }
 }

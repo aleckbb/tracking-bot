@@ -20,9 +20,11 @@ public class ScrapperClient {
         this.webClient = builder.baseUrl(url).build();
     }
 
-    public void chatReg(long chatId) {
+    public void chatReg(long chatId, String username) {
         webClient.post()
             .uri("/tg-chat/{id}", chatId)
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(BodyInserters.fromValue(username))
             .retrieve()
             .onStatus(
                 HttpStatusCode::is4xxClientError,
@@ -69,9 +71,11 @@ public class ScrapperClient {
             .block();
     }
 
-    public LinkResponse addLink(Long chatId, String link) {
+    public LinkResponse addLink(Long chatId, String username, String link) {
         return webClient.post()
-            .uri("/links", chatId)
+            .uri("/links")
+            .header("Tg-Chat-Id", chatId.toString())
+            .header("Username", username)
             .contentType(MediaType.APPLICATION_JSON)
             .body(BodyInserters.fromValue(new AddLinkRequest(link)))
             .retrieve()
