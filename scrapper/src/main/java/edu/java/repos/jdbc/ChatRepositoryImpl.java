@@ -1,6 +1,7 @@
-package edu.java.repos.chat;
+package edu.java.repos.jdbc;
 
 import edu.java.dtoClasses.jdbc.DTOChat;
+import edu.java.repos.interfaces.ChatRepository;
 import edu.java.repos.mappers.ChatMapper;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package edu.java.repos.chat;
+package edu.java.repos.interfaces;
 
 import edu.java.dtoClasses.jdbc.DTOChat;
 import java.util.List;

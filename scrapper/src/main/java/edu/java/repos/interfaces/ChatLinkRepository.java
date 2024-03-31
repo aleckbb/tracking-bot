@@ -1,4 +1,4 @@
-package edu.java.repos.chatLink;
+package edu.java.repos.interfaces;
 
 import edu.java.dtoClasses.jdbc.DTOSub;
 import java.util.List;

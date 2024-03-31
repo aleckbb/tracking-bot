@@ -2,8 +2,8 @@ package edu.java.service.jdbc;
 
 import edu.java.dtoClasses.jdbc.DTOLink;
 import edu.java.dtoClasses.jdbc.DTOSub;
-import edu.java.repos.chatLink.ChatLinkRepository;
-import edu.java.repos.link.LinkRepositoryImpl;
+import edu.java.repos.interfaces.ChatLinkRepository;
+import edu.java.repos.jdbc.LinkRepositoryImpl;
 import edu.java.service.interfaces.LinkUpdater;
 import java.time.OffsetDateTime;
 import java.util.List;

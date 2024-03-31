@@ -1,10 +1,9 @@
 package edu.java.scrapper.jdbc;
 
 import edu.java.dtoClasses.jdbc.DTOLink;
-import edu.java.repos.link.LinkRepositoryImpl;
+import edu.java.repos.jdbc.LinkRepositoryImpl;
 import edu.java.scrapper.IntegrationTest;
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

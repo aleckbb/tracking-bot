@@ -1,4 +1,4 @@
-package edu.java.repos.link;
+package edu.java.repos.interfaces;
 
 import edu.java.dtoClasses.jdbc.DTOLink;
 import java.time.OffsetDateTime;

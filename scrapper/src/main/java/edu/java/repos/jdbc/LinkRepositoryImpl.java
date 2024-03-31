@@ -1,6 +1,7 @@
-package edu.java.repos.link;
+package edu.java.repos.jdbc;
 
 import edu.java.dtoClasses.jdbc.DTOLink;
+import edu.java.repos.interfaces.LinkRepository;
 import edu.java.repos.mappers.LinkMapper;
 import java.time.OffsetDateTime;
 import java.util.List;
