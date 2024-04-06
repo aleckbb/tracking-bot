@@ -50,7 +50,7 @@ public class JpaLinkService implements LinkService {
             }
         }
         chat.getLinks().add(jpaLinkRepository.findByUrl(url));
-        jpaChatRepository.saveAndFlush(chat);
+        jpaChatRepository.flush();
     }
 
     @Override
@@ -60,7 +60,8 @@ public class JpaLinkService implements LinkService {
             throw new NotExistException("Такой ссылки не отслеживается");
         }
         chat.getLinks().remove(jpaLinkRepository.findByUrl(url));
-        jpaChatRepository.saveAndFlush(chat);
+        jpaChatRepository.flush();
+        jpaLinkRepository.flush();
         if (jpaLinkRepository.findByUrl(url).getChats().size() == 1) {
             jpaLinkRepository.deleteById(jpaLinkRepository.findByUrl(url).getLinkId());
         }
