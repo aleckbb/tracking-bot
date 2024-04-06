@@ -115,7 +115,7 @@ public class ScrapperController {
         LinkResponse[] res = new LinkResponse[links.size()];
         int i = 0;
         for (DTOLink link : links) {
-            res[i] = new LinkResponse(id, link.url());
+            res[i] = new LinkResponse(id, link.getUrl());
             i++;
         }
         return new ListLinksResponse(res, res.length);

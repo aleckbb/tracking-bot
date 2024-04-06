@@ -10,17 +10,17 @@ import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-@SuppressWarnings("MagicNumber") @Repository public class LinkRepositoryImpl implements LinkRepository {
+@SuppressWarnings("MagicNumber") @Repository public class JdbcLinkRepository implements LinkRepository {
     @Autowired private JdbcClient jdbcClient;
 
     @Transactional @Override public void add(DTOLink link) {
         jdbcClient.sql("INSERT INTO link VALUES(DEFAULT, ?, ?, ?, ?, ?)")
-            .params(link.url(), link.updateAt(), link.checkAt(), link.linkType(), link.data())
+            .params(link.getUrl(), link.getUpdateAt(), link.getCheckAt(), link.getLinkType(), link.getData())
             .update();
     }
 
     @Transactional @Override public void remove(DTOLink link) {
-        jdbcClient.sql("DELETE FROM link WHERE link_id=?").param(link.linkId()).update();
+        jdbcClient.sql("DELETE FROM link WHERE link_id=?").param(link.getLinkId()).update();
     }
 
     @Transactional @Override public List<DTOLink> findAll() {

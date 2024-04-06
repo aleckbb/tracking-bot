@@ -14,9 +14,13 @@ public record ApplicationConfig(
     @NotNull
     String baseUrlGithub,
     @NotNull
-    String baseUrlStackOverFlow
-
+    String baseUrlStackOverFlow,
+    AccessType databaseAccessType
 ) {
     public record Scheduler(boolean enable, @NotNull Duration interval, @NotNull Duration forceCheckDelay) {
+    }
+
+    public enum AccessType {
+        JDBC, JPA
     }
 }

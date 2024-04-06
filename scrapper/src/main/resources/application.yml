@@ -2,6 +2,8 @@ app:
   base-url-github: "https://api.github.com"
   base-url-stackoverflow: "https://api.stackexchange.com"
 
+  database-access-type: jdbc
+
   scheduler:
     enable: true
     interval: 10s
@@ -20,7 +22,10 @@ spring:
     url: jdbc:postgresql://localhost:5432/scrapper
   jpa:
     properties:
-      hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        enable_lazy_load_no_trans: true
+    open-in-view: false
 
 server:
   port: 8080

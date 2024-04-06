@@ -1,7 +1,7 @@
 package edu.java.scrapper.jdbc;
 
 import edu.java.dtoClasses.jdbc.DTOChat;
-import edu.java.repos.jdbc.ChatRepositoryImpl;
+import edu.java.repos.jdbc.JdbcChatRepository;
 import edu.java.scrapper.IntegrationTest;
 import java.time.OffsetDateTime;
 import org.junit.jupiter.api.BeforeAll;
@@ -15,7 +15,7 @@ import static org.junit.Assert.assertEquals;
 @SpringBootTest
 public class ChatRepositoryImplTest extends IntegrationTest {
     @Autowired
-    private ChatRepositoryImpl chatRepository;
+    private JdbcChatRepository chatRepository;
 
     static DTOChat chat;
 

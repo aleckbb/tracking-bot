@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 @Repository
-public class ChatRepositoryImpl implements ChatRepository {
+public class JdbcChatRepository implements ChatRepository {
 
     @Autowired
     private JdbcClient jdbcClient;

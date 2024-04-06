@@ -7,31 +7,25 @@ import edu.java.dtoClasses.jdbc.DTOSub;
 import edu.java.dtoClasses.sof.StackOverflow;
 import edu.java.exceptions.AlreadyExistException;
 import edu.java.exceptions.NotExistException;
-import edu.java.repos.jdbc.ChatLinkRepositoryImpl;
-import edu.java.repos.jdbc.ChatRepositoryImpl;
-import edu.java.repos.jdbc.LinkRepositoryImpl;
+import edu.java.repos.jdbc.JdbcChatLinkRepository;
+import edu.java.repos.jdbc.JdbcChatRepository;
+import edu.java.repos.jdbc.JdbcLinkRepository;
 import edu.java.service.handlers.GitHubHandler;
 import edu.java.service.handlers.SofHandler;
 import edu.java.service.interfaces.LinkService;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import lombok.RequiredArgsConstructor;
 
 @SuppressWarnings("MultipleStringLiterals")
-@Service
+@RequiredArgsConstructor
 public class JdbcLinkService implements LinkService {
-    @Autowired
-    private ChatRepositoryImpl chatRepository;
-    @Autowired
-    private LinkRepositoryImpl linkRepository;
-    @Autowired
-    private ChatLinkRepositoryImpl chatLinkRepository;
-    @Autowired
-    private GitHubHandler gitHubHandler;
-    @Autowired
-    private SofHandler sofHandler;
+    private final JdbcChatRepository chatRepository;
+    private final JdbcLinkRepository linkRepository;
+    private final JdbcChatLinkRepository chatLinkRepository;
+    private final GitHubHandler gitHubHandler;
+    private final SofHandler sofHandler;
 
     @Override
     public void add(long chatId, String url, String username) throws AlreadyExistException {
@@ -48,9 +42,9 @@ public class JdbcLinkService implements LinkService {
             String data = (String) dataAndTime[0];
             OffsetDateTime updateAt = (OffsetDateTime) dataAndTime[1];
             linkRepository.add(new DTOLink(null, url, updateAt, checkedAt, type, data));
-            linkId = linkRepository.findByUrl(url).linkId();
+            linkId = linkRepository.findByUrl(url).getLinkId();
         } else {
-            linkId = link.linkId();
+            linkId = link.getLinkId();
         }
         List<DTOSub> subs = chatLinkRepository.findByChatId(chatId);
         if (pairIsExists(subs, linkId)) {
@@ -68,7 +62,7 @@ public class JdbcLinkService implements LinkService {
         boolean isLinkExist = false;
         for (DTOSub link : links) {
             List<DTOSub> subs = chatLinkRepository.findByLinkId(link.linkId());
-            if (linkRepository.findByUrl(url).linkId().equals(link.linkId())) {
+            if (linkRepository.findByUrl(url).getLinkId().equals(link.linkId())) {
                 isLinkExist = true;
                 chatLinkRepository.remove(new DTOSub(chatId, link.linkId()));
                 if (subs.size() == 1) {
@@ -89,7 +83,7 @@ public class JdbcLinkService implements LinkService {
             .map(linkId -> {
                 List<DTOLink> links = linkRepository.findAll();
                 for (DTOLink link : links) {
-                    if (linkId.equals(link.linkId())) {
+                    if (linkId.equals(link.getLinkId())) {
                         return link;
                     }
                 }

@@ -38,9 +38,9 @@ public class LinkUpdaterScheduler {
         List<DTOLink> oldLinks = linkUpdater.findOldLinksToUpdate(time);
         for (DTOLink link : oldLinks) {
             time = OffsetDateTime.now();
-            linkUpdater.check(link.linkId(), time);
+            linkUpdater.check(link.getLinkId(), time);
             String description;
-            switch (link.linkType()) {
+            switch (link.getLinkType()) {
                 case "github" -> {
                     description = gitHubUpdate(link);
                 }
@@ -53,10 +53,10 @@ public class LinkUpdaterScheduler {
             }
             if (!description.isEmpty()) {
                 botClient.sendUpdate(
-                    link.linkId(),
-                    link.url(),
+                    link.getLinkId(),
+                    link.getUrl(),
                     description,
-                    linkUpdater.allChatIdsByLinkId(link.linkId())
+                    linkUpdater.allChatIdsByLinkId(link.getLinkId())
                 );
             }
         }
@@ -64,15 +64,15 @@ public class LinkUpdaterScheduler {
 
     private String sofUpdate(DTOLink link) {
         StringBuilder description = new StringBuilder();
-        StackOverflow stackOverflow = sofHandler.getInfo(link.url());
+        StackOverflow stackOverflow = sofHandler.getInfo(link.getUrl());
         try {
-            SofData sofData = Json.mapper().readValue(link.data(), SofData.class);
+            SofData sofData = Json.mapper().readValue(link.getData(), SofData.class);
             StackOverflow.Question question = stackOverflow.items().getFirst();
-            if (question.lastActivityDate().plusHours(3).isAfter(link.updateAt())
+            if (question.lastActivityDate().plusHours(3).isAfter(link.getUpdateAt())
                 || (!sofData.isAnswered() && question.isAnswered())) {
-                linkUpdater.update(link.linkId(), question.lastActivityDate(), sofHandler.getData(stackOverflow));
+                linkUpdater.update(link.getLinkId(), question.lastActivityDate(), sofHandler.getData(stackOverflow));
                 description.append("В вопросе \"").append(question.title()).append("\" по ссылке ")
-                    .append(link.url());
+                    .append(link.getUrl());
                 if (!sofData.isAnswered() && question.isAnswered()) {
                     description.append(" автор отметил один из ответов правильным. ");
                 } else {
@@ -88,13 +88,13 @@ public class LinkUpdaterScheduler {
 
     private String gitHubUpdate(DTOLink link) {
         StringBuilder description = new StringBuilder();
-        GitHub gitHub = gitHubHandler.getInfo(link.url());
+        GitHub gitHub = gitHubHandler.getInfo(link.getUrl());
         try {
-            GitHubData gitHubData = Json.mapper().readValue(link.data(), GitHubData.class);
-            if (gitHub.repository().pushedTime().plusHours(3).isAfter(link.updateAt())) {
-                linkUpdater.update(link.linkId(), gitHub.repository().pushedTime(), gitHubHandler.getData(gitHub));
+            GitHubData gitHubData = Json.mapper().readValue(link.getData(), GitHubData.class);
+            if (gitHub.repository().pushedTime().plusHours(3).isAfter(link.getUpdateAt())) {
+                linkUpdater.update(link.getLinkId(), gitHub.repository().pushedTime(), gitHubHandler.getData(gitHub));
                 description.append("В репозитории ").append(gitHub.repository().repoName()).append(" по ссылке ")
-                    .append(link.url());
+                    .append(link.getUrl());
                 String begDescription = description.toString();
                 if (gitHubData.numberOfBranches() < gitHub.branches().length) {
                     description.append(" была добавлена ветка ").append(". ");

@@ -7,9 +7,9 @@ import java.util.List;
 public interface LinkUpdater {
     void update(long linkId, OffsetDateTime time, String data);
 
-    void check(long id, OffsetDateTime timestamp);
+    void check(long linkId, OffsetDateTime time);
 
-    List<DTOLink> findOldLinksToUpdate(OffsetDateTime timestamp);
+    List<DTOLink> findOldLinksToUpdate(OffsetDateTime time);
 
     long[] allChatIdsByLinkId(long linkId);
 }

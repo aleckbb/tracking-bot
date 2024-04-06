@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 @Repository
-public class ChatLinkRepositoryImpl implements ChatLinkRepository {
+public class JdbcChatLinkRepository implements ChatLinkRepository {
     @Autowired
     private JdbcClient jdbcClient;
 

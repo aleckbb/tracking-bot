@@ -1,7 +1,7 @@
 package edu.java.scrapper.jdbc;
 
 import edu.java.dtoClasses.jdbc.DTOLink;
-import edu.java.repos.jdbc.LinkRepositoryImpl;
+import edu.java.repos.jdbc.JdbcLinkRepository;
 import edu.java.scrapper.IntegrationTest;
 import java.time.OffsetDateTime;
 import org.junit.jupiter.api.BeforeAll;
@@ -14,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 
 @SpringBootTest
 public class LinkRepositoryImplTest extends IntegrationTest {
-    @Autowired private LinkRepositoryImpl linkRepository;
+    @Autowired private JdbcLinkRepository linkRepository;
 
     static DTOLink link;
 
@@ -32,7 +32,7 @@ public class LinkRepositoryImplTest extends IntegrationTest {
     @Test @Transactional @Rollback void add() {
         assertEquals(0, linkRepository.findAll().size());
         linkRepository.add(link);
-        assertEquals("https://test", linkRepository.findAll().getFirst().url());
+        assertEquals("https://test", linkRepository.findAll().getFirst().getUrl());
         assertEquals(1, linkRepository.findAll().size());
     }
 
@@ -41,7 +41,7 @@ public class LinkRepositoryImplTest extends IntegrationTest {
         assertEquals(1, linkRepository.findAll().size());
         DTOLink curLink =
             new DTOLink(
-                linkRepository.findByUrl(link.url()).linkId(),
+                linkRepository.findByUrl(link.getUrl()).getLinkId(),
                 null,
                 null,
                 null,
@@ -56,8 +56,8 @@ public class LinkRepositoryImplTest extends IntegrationTest {
         linkRepository.add(link);
         assertEquals(1, linkRepository.findAll().size());
         assertEquals(
-            "[DTOLink[linkId=" + linkRepository.findByUrl(link.url()).linkId() +
-                ", url=https://test, updateAt=2022-01-01T10:30Z, checkAt=2022-01-01T10:30Z, linkType=, data=]]",
+            "[DTOLink(linkId=" + linkRepository.findByUrl(link.getUrl()).getLinkId() +
+                ", url=https://test, updateAt=2022-01-01T10:30Z, checkAt=2022-01-01T10:30Z, linkType=, data=)]",
             linkRepository.findAll().toString()
         );
     }
