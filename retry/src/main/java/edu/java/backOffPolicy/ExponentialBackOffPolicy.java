@@ -7,7 +7,7 @@ import org.springframework.retry.backoff.Sleeper;
 @SuppressWarnings("MagicNumber")
 public class ExponentialBackOffPolicy extends MyBackOffPolicy<ExponentialBackOffPolicy> {
 
-    static final Logger LOGGER = Logger.getLogger(ConstBackOffPolicy.class.getName());
+    static final Logger LOGGER = Logger.getLogger(ExponentialBackOffPolicy.class.getName());
     private static final long MULTIPLIER = 2L;
     private final long maxPeriod;
 

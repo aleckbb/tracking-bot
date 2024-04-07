@@ -7,7 +7,7 @@ import org.springframework.retry.backoff.Sleeper;
 @SuppressWarnings("MagicNumber")
 public class LinearBackOffPolicy extends MyBackOffPolicy<LinearBackOffPolicy> {
 
-    static final Logger LOGGER = Logger.getLogger(ConstBackOffPolicy.class.getName());
+    static final Logger LOGGER = Logger.getLogger(LinearBackOffPolicy.class.getName());
 
     public LinearBackOffPolicy() {
     }

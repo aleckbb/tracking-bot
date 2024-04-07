@@ -10,14 +10,15 @@ import org.springframework.validation.annotation.Validated;
 public record ApplicationConfig(
     @NotEmpty
     String telegramToken,
-    @Bean
-    Retry retry
+
+    RetryType retryType
 ) {
     @Bean
     public String getTelegramToken() {
         return telegramToken;
     }
 
-    public record Retry(String type) {
+    public enum RetryType {
+        Const, Linear, Exponential
     }
 }

@@ -15,12 +15,18 @@ public record ApplicationConfig(
     String baseUrlGithub,
     @NotNull
     String baseUrlStackOverFlow,
-    AccessType databaseAccessType
+    AccessType databaseAccessType,
+
+    RetryType retryType
 ) {
     public record Scheduler(boolean enable, @NotNull Duration interval, @NotNull Duration forceCheckDelay) {
     }
 
     public enum AccessType {
         JDBC, JPA
+    }
+
+    public enum RetryType {
+        Const, Linear, Exponential
     }
 }

@@ -17,7 +17,7 @@ public class GitHubClient {
         this.webClient = builder.baseUrl(url).build();
     }
 
-    @Retryable(interceptor = "${retry.type}", maxAttempts = 5)
+    @Retryable(interceptor = "MyInterceptor")
     public GitHub getGitHub(String name, String repo) {
         Repository repository = webClient.get()
             .uri("/repos/{name}/{repo}", name, repo)

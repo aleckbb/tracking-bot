@@ -13,7 +13,7 @@ public class StackOverflowClient {
         this.webClient = builder.baseUrl(url).build();
     }
 
-    @Retryable(interceptor = "${retry.type}", maxAttempts = 5)
+    @Retryable(interceptor = "MyInterceptor")
     public StackOverflow getStackOverflow(String questionId) {
         return webClient.get()
             .uri("/questions/{ids}?site=stackoverflow", questionId)

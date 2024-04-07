@@ -9,8 +9,7 @@ app:
     interval: 10s
     force-check-delay: 10s
 
-  retry:
-    type: Const
+  retry-type: Const
 
 spring:
   application:

@@ -16,7 +16,7 @@ public class BotClient {
         this.webClient = builder.baseUrl(url).build();
     }
 
-    @Retryable(interceptor = "${retry.type}", maxAttempts = 5)
+    @Retryable(interceptor = "MyInterceptor")
     public void sendUpdate(long id, String url, String description, long[] tgChatIds) {
         webClient.post()
             .uri("/updates")

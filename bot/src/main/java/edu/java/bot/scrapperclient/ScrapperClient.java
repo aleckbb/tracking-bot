@@ -1,6 +1,5 @@
 package edu.java.bot.scrapperclient;
 
-import edu.java.bot.configuration.ApplicationConfig;
 import edu.java.models.Request.AddLinkRequest;
 import edu.java.models.Request.RemoveLinkRequest;
 import edu.java.models.Response.LinkResponse;
@@ -17,14 +16,13 @@ import reactor.core.publisher.Mono;
 @SuppressWarnings("MultipleStringLiterals")
 @Component
 public class ScrapperClient {
-    private ApplicationConfig.Retry retry;
     private final WebClient webClient;
 
     public ScrapperClient(WebClient.Builder builder, String url) {
         this.webClient = builder.baseUrl(url).build();
     }
 
-    @Retryable(interceptor = "#{retry.type}")
+    @Retryable(interceptor = "MyInterceptor")
     public void chatReg(long chatId, String username) {
         webClient.post()
             .uri("/tg-chat/{id}", chatId)

@@ -1,7 +1,6 @@
 app:
   telegram-token:
-  retry:
-    type: Const
+  retry-type: Exponential
 
 spring:
   application:
