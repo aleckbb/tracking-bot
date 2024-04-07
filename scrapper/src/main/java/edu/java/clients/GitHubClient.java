@@ -5,6 +5,7 @@ import edu.java.dtoClasses.github.GitHub;
 import edu.java.dtoClasses.github.PullRequest;
 import edu.java.dtoClasses.github.Repository;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -16,6 +17,7 @@ public class GitHubClient {
         this.webClient = builder.baseUrl(url).build();
     }
 
+    @Retryable(interceptor = "${retry.type}", maxAttempts = 5)
     public GitHub getGitHub(String name, String repo) {
         Repository repository = webClient.get()
             .uri("/repos/{name}/{repo}", name, repo)

@@ -1,22 +1,23 @@
 package edu.java.bot.configuration;
 
 import jakarta.validation.constraints.NotEmpty;
-import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.validation.annotation.Validated;
 
 @Validated
-@Data
 @ConfigurationProperties(prefix = "app", ignoreUnknownFields = false)
-public class ApplicationConfig {
-
+public record ApplicationConfig(
     @NotEmpty
-    private final String telegramToken;
-
+    String telegramToken,
+    @Bean
+    Retry retry
+) {
     @Bean
     public String getTelegramToken() {
         return telegramToken;
     }
 
+    public record Retry(String type) {
+    }
 }

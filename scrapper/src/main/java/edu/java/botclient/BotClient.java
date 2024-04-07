@@ -3,6 +3,7 @@ package edu.java.botclient;
 import edu.java.models.Request.LinkUpdate;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -15,6 +16,7 @@ public class BotClient {
         this.webClient = builder.baseUrl(url).build();
     }
 
+    @Retryable(interceptor = "${retry.type}", maxAttempts = 5)
     public void sendUpdate(long id, String url, String description, long[] tgChatIds) {
         webClient.post()
             .uri("/updates")

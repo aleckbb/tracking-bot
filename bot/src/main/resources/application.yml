@@ -1,5 +1,7 @@
 app:
   telegram-token:
+  retry:
+    type: Const
 
 spring:
   application:

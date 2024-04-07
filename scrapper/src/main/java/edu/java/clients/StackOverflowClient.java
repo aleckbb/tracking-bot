@@ -2,6 +2,7 @@ package edu.java.clients;
 
 import edu.java.dtoClasses.sof.StackOverflow;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -12,6 +13,7 @@ public class StackOverflowClient {
         this.webClient = builder.baseUrl(url).build();
     }
 
+    @Retryable(interceptor = "${retry.type}", maxAttempts = 5)
     public StackOverflow getStackOverflow(String questionId) {
         return webClient.get()
             .uri("/questions/{ids}?site=stackoverflow", questionId)

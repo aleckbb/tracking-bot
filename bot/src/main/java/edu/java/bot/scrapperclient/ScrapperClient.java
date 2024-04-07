@@ -1,5 +1,6 @@
 package edu.java.bot.scrapperclient;
 
+import edu.java.bot.configuration.ApplicationConfig;
 import edu.java.models.Request.AddLinkRequest;
 import edu.java.models.Request.RemoveLinkRequest;
 import edu.java.models.Response.LinkResponse;
@@ -7,19 +8,23 @@ import edu.java.models.Response.ListLinksResponse;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
+import org.springframework.retry.annotation.Retryable;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @SuppressWarnings("MultipleStringLiterals")
+@Component
 public class ScrapperClient {
-
+    private ApplicationConfig.Retry retry;
     private final WebClient webClient;
 
     public ScrapperClient(WebClient.Builder builder, String url) {
         this.webClient = builder.baseUrl(url).build();
     }
 
+    @Retryable(interceptor = "#{retry.type}")
     public void chatReg(long chatId, String username) {
         webClient.post()
             .uri("/tg-chat/{id}", chatId)
@@ -38,6 +43,7 @@ public class ScrapperClient {
             .block();
     }
 
+    @Retryable(interceptor = "${retry.type}")
     public void chatDel(long chatId) {
         webClient.delete()
             .uri("/tg-chat/{id}", chatId)
@@ -54,6 +60,7 @@ public class ScrapperClient {
             .block();
     }
 
+    @Retryable(interceptor = "${retry.type}")
     public ListLinksResponse getLinks(Long chatId) {
         return webClient.get()
             .uri("/links")
@@ -71,6 +78,7 @@ public class ScrapperClient {
             .block();
     }
 
+    @Retryable(interceptor = "${retry.type}", maxAttempts = 5)
     public LinkResponse addLink(Long chatId, String username, String link) {
         return webClient.post()
             .uri("/links")
@@ -91,6 +99,7 @@ public class ScrapperClient {
             .block();
     }
 
+    @Retryable(interceptor = "${retry.type}", maxAttempts = 5)
     public LinkResponse delLinks(Long chatId, String link) {
         return webClient.method(HttpMethod.DELETE)
             .uri("/links")
