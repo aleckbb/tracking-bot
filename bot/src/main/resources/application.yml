@@ -1,6 +1,10 @@
 app:
   telegram-token:
-  retry-type: Exponential
+  retry:
+    retry-type: Exponential
+    max-attempts: 5
+    retryable-exceptions:
+      - java.lang.Exception
 
 spring:
   application:

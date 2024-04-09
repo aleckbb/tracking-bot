@@ -185,4 +185,24 @@ public class ScrapperController {
         linkService.remove(id, removeLinkRequest.link());
         return new LinkResponse(id, removeLinkRequest.link());
     }
+
+    @Operation(summary = "Проверить, что пользователь зарегистрирован")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200",
+            description = "Пользователь уже зарегистрирован"
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Некорректные параметры запроса",
+            content = {@Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = ApiErrorResponse.class)
+            )}
+        )
+    })
+    @GetMapping("/tg-chat/{id}")
+    public Boolean hasUser(@PathVariable long id) {
+        return chatService.userExist(id);
+    }
 }

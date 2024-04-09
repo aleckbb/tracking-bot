@@ -41,4 +41,17 @@ public class JdbcChatRepository implements ChatRepository {
         return jdbcClient.sql("SELECT * FROM chat")
             .query(new ChatMapper()).list();
     }
+
+    @Transactional
+    @Override
+    public Boolean existsById(long chatId) {
+        try {
+            jdbcClient.sql("SELECT * FROM chat WHERE chat_id=?")
+                .param(chatId)
+                .query(new ChatMapper()).single();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

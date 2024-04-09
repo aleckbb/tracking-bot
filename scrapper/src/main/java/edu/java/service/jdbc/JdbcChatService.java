@@ -43,6 +43,11 @@ public class JdbcChatService implements ChatService {
         chatRepository.remove(new DTOChat(chatId, null, null));
     }
 
+    @Override
+    public Boolean userExist(long chatId) {
+        return chatRepository.existsById(chatId);
+    }
+
     private boolean isChatExists(long id) {
         long chatCount = chatRepository.findAll()
             .stream()

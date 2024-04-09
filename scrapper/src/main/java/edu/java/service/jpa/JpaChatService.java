@@ -41,4 +41,9 @@ public class JpaChatService implements ChatService {
         jpaLinkRepository.flush();
         jpaChatRepository.flush();
     }
+
+    @Override
+    public Boolean userExist(long chatId) {
+        return jpaChatRepository.existsById(chatId);
+    }
 }

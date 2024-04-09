@@ -8,13 +8,11 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.retry.annotation.Retryable;
-import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @SuppressWarnings("MultipleStringLiterals")
-@Component
 public class ScrapperClient {
     private final WebClient webClient;
 
@@ -41,7 +39,7 @@ public class ScrapperClient {
             .block();
     }
 
-    @Retryable(interceptor = "${retry.type}")
+    @Retryable(interceptor = "MyInterceptor")
     public void chatDel(long chatId) {
         webClient.delete()
             .uri("/tg-chat/{id}", chatId)
@@ -58,7 +56,7 @@ public class ScrapperClient {
             .block();
     }
 
-    @Retryable(interceptor = "${retry.type}")
+    @Retryable(interceptor = "MyInterceptor")
     public ListLinksResponse getLinks(Long chatId) {
         return webClient.get()
             .uri("/links")
@@ -76,7 +74,7 @@ public class ScrapperClient {
             .block();
     }
 
-    @Retryable(interceptor = "${retry.type}", maxAttempts = 5)
+    @Retryable(interceptor = "MyInterceptor")
     public LinkResponse addLink(Long chatId, String username, String link) {
         return webClient.post()
             .uri("/links")
@@ -97,7 +95,7 @@ public class ScrapperClient {
             .block();
     }
 
-    @Retryable(interceptor = "${retry.type}", maxAttempts = 5)
+    @Retryable(interceptor = "MyInterceptor")
     public LinkResponse delLinks(Long chatId, String link) {
         return webClient.method(HttpMethod.DELETE)
             .uri("/links")
@@ -114,6 +112,23 @@ public class ScrapperClient {
                 error -> Mono.error(new RuntimeException("Server is not responding"))
             )
             .bodyToMono(LinkResponse.class)
+            .block();
+    }
+
+    @Retryable(interceptor = "MyInterceptor")
+    public Boolean hasUser(Long chatId) {
+        return webClient.get()
+            .uri("/tg-chat/{id}", chatId)
+            .retrieve()
+            .onStatus(
+                HttpStatusCode::is4xxClientError,
+                error -> Mono.error(new RuntimeException("Chat id is not found"))
+            )
+            .onStatus(
+                HttpStatusCode::is5xxServerError,
+                error -> Mono.error(new RuntimeException("Server is not responding"))
+            )
+            .bodyToMono(Boolean.class)
             .block();
     }
 }

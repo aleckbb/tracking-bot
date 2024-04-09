@@ -128,39 +128,31 @@ public class Dialog {
 
     public SendMessage help(Chat chat) {
         long id = chat.id();
-        try {
-            scrapperClient.chatReg(id, chat.username());
-            scrapperClient.chatDel(id);
-            return new SendMessage(id, "Вы не зарегистрированы!");
-        } catch (Exception e) {
+        if (scrapperClient.hasUser(chat.id())) {
             return new SendMessage(id, """
                 /start -- зарегистрировать пользователя
                 /help -- вывести окно с командами
                 /track -- начать отслеживание ссылки
                 /untrack -- прекратить отслеживание ссылки
                 /list -- показать список отслеживаемых ссылок""");
+        } else {
+            return new SendMessage(id, "Вы не зарегистрированы!");
         }
     }
 
     public SendMessage track(Chat chat) {
         long id = chat.id();
-        try {
-            scrapperClient.chatReg(id, chat.username());
-            scrapperClient.chatDel(id);
-            return new SendMessage(id, "Вы не зарегистрированы!");
-        } catch (Exception e) {
+        if (scrapperClient.hasUser(chat.id())) {
             waitMap.put(id, true);
             return new SendMessage(id, "Введите ссылку!");
+        } else {
+            return new SendMessage(id, "Вы не зарегистрированы!");
         }
     }
 
     public SendMessage unTrack(Chat chat) {
         long id = chat.id();
-        try {
-            scrapperClient.chatReg(id, chat.username());
-            scrapperClient.chatDel(id);
-            return new SendMessage(id, "Вы не зарегистрированы!");
-        } catch (Exception e) {
+        if (scrapperClient.hasUser(chat.id())) {
             try {
                 scrapperClient.getLinks(id);
                 waitMap.put(id, false);
@@ -168,16 +160,14 @@ public class Dialog {
             } catch (Exception ex) {
                 return new SendMessage(id, "Вы ещё не отслеживаете ни одного сайта!");
             }
+        } else {
+            return new SendMessage(id, "Вы не зарегистрированы!");
         }
     }
 
     public SendMessage list(Chat chat) {
         long id = chat.id();
-        try {
-            scrapperClient.chatReg(id, chat.username());
-            scrapperClient.chatDel(id);
-            return new SendMessage(id, "Вы не зарегистрированы!");
-        } catch (Exception e) {
+        if (scrapperClient.hasUser(chat.id())) {
             try {
                 ListLinksResponse links = scrapperClient.getLinks(id);
                 StringBuilder messageText = new StringBuilder();
@@ -190,6 +180,8 @@ public class Dialog {
             } catch (Exception ex) {
                 return new SendMessage(id, "Вы ещё не отслеживаете ни одного сайта!");
             }
+        } else {
+            return new SendMessage(id, "Вы не зарегистрированы!");
         }
     }
 }

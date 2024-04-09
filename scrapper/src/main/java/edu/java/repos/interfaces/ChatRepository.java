@@ -11,4 +11,6 @@ public interface ChatRepository {
     void remove(DTOChat chat);
 
     List<DTOChat> findAll();
+
+    Boolean existsById(long chatId);
 }

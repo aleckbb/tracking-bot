@@ -7,4 +7,6 @@ public interface ChatService {
     void register(long chatId, String username) throws RepeatedRegistrationException;
 
     void unregister(long chatId) throws NotExistException;
+
+    Boolean userExist(long chatId);
 }
