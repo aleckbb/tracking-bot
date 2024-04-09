@@ -10,8 +10,8 @@ app:
     force-check-delay: 10s
 
   retry:
-    retry-type: Exponential
-    max-attempts: 5
+    retry-type: Const
+    max-attempts: 3
     retryable-exceptions:
       - java.lang.Exception
 

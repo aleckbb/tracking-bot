@@ -59,6 +59,7 @@ public class Hw1Test {
     void test2() {
         // given
         Update update = mock(Update.class);
+        ScrapperClient scrapperClient = mock(ScrapperClient.class);
 
         // when
         when(update.message()).thenReturn(mock(Message.class));
@@ -66,6 +67,7 @@ public class Hw1Test {
         when(update.message().chat().id()).thenReturn(1L);
         when(update.message().chat().username()).thenReturn("oposum");
         when(update.message().text()).thenReturn("/help");
+        when(scrapperClient.hasUser(1L)).thenReturn(true);
 
         Dialog dialog = new Dialog(scrapperClient);
         SendMessage response = dialog.onUpdateReceived(update);
@@ -87,6 +89,7 @@ public class Hw1Test {
         Update update = mock(Update.class);
         server.start();
         stubFor(post(urlEqualTo("/links")).willReturn(aResponse().withStatus(200)));
+        ScrapperClient scrapperClient = mock(ScrapperClient.class);
 
         // when
         when(update.message()).thenReturn(mock(Message.class));
@@ -94,6 +97,7 @@ public class Hw1Test {
         when(update.message().chat().id()).thenReturn(2L);
         when(update.message().chat().username()).thenReturn("oposum");
         when(update.message().text()).thenReturn("/track");
+        when(scrapperClient.hasUser(2L)).thenReturn(true);
 
         Dialog dialog = new Dialog(scrapperClient);
         SendMessage response = dialog.onUpdateReceived(update);
@@ -117,6 +121,7 @@ public class Hw1Test {
     void test4() {
         // given
         Update update = mock(Update.class);
+        ScrapperClient scrapperClient = mock(ScrapperClient.class);
         server.start();
         stubFor(delete(urlEqualTo("/links")).willReturn(aResponse().withStatus(200)));
         stubFor(get(urlEqualTo("/links")).willReturn(aResponse().withStatus(200)));
@@ -127,6 +132,7 @@ public class Hw1Test {
         when(update.message().chat().id()).thenReturn(2L);
         when(update.message().chat().username()).thenReturn("oposum");
         when(update.message().text()).thenReturn("/untrack");
+        when(scrapperClient.hasUser(2L)).thenReturn(true);
 
         Dialog dialog = new Dialog(scrapperClient);
         SendMessage response = dialog.onUpdateReceived(update);
@@ -149,6 +155,7 @@ public class Hw1Test {
     void test5() throws MalformedURLException {
         // given
         Update update = mock(Update.class);
+        ScrapperClient scrapperClient = mock(ScrapperClient.class);
         server.start();
         stubFor(get(urlEqualTo("/links"))
             .withHeader("Tg-Chat-Id", WireMock.equalTo("2"))
@@ -161,6 +168,7 @@ public class Hw1Test {
         when(update.message().chat().id()).thenReturn(2L);
         when(update.message().chat().username()).thenReturn("oposum");
         when(update.message().text()).thenReturn("/list");
+        when(scrapperClient.hasUser(2L)).thenReturn(true);
 
         Dialog dialog = new Dialog(scrapperClient);
         SendMessage response = dialog.onUpdateReceived(update);
@@ -196,6 +204,7 @@ public class Hw1Test {
     void test7() {
         // given
         Update update = mock(Update.class);
+        ScrapperClient scrapperClient = mock(ScrapperClient.class);
         server.start();
         stubFor(post(urlEqualTo("/tg-chat/2")).willReturn(aResponse().withStatus(200)));
         stubFor(delete(urlEqualTo("/tg-chat/2")).willReturn(aResponse().withStatus(200)));
@@ -206,6 +215,7 @@ public class Hw1Test {
         when(update.message().chat().id()).thenReturn(2L);
         when(update.message().chat().username()).thenReturn("oposum");
         when(update.message().text()).thenReturn("/list");
+        when(scrapperClient.hasUser(2L)).thenReturn(false);
 
         Dialog dialog = new Dialog(scrapperClient);
         SendMessage response = dialog.onUpdateReceived(update);

@@ -1,8 +1,8 @@
 app:
   telegram-token:
   retry:
-    retry-type: Exponential
-    max-attempts: 5
+    retry-type: Const
+    max-attempts: 3
     retryable-exceptions:
       - java.lang.Exception
 
