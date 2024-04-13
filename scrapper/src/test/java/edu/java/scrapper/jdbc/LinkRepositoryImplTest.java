@@ -1,8 +1,8 @@
 package edu.java.scrapper.jdbc;
 
-import edu.java.dtoClasses.jdbc.DTOLink;
-import edu.java.repos.jdbc.JdbcLinkRepository;
 import edu.java.scrapper.IntegrationTest;
+import edu.java.scrapper.dtoClasses.jdbc.DTOLink;
+import edu.java.scrapper.repos.jdbc.JdbcLinkRepository;
 import java.time.OffsetDateTime;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

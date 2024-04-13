@@ -1,8 +1,8 @@
 package edu.java.scrapper.jdbc;
 
-import edu.java.dtoClasses.jdbc.DTOChat;
-import edu.java.repos.jdbc.JdbcChatRepository;
 import edu.java.scrapper.IntegrationTest;
+import edu.java.scrapper.dtoClasses.jdbc.DTOChat;
+import edu.java.scrapper.repos.jdbc.JdbcChatRepository;
 import java.time.OffsetDateTime;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

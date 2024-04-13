@@ -36,6 +36,7 @@ public class Hw1Test {
     void test1() {
         // given
         Update update = mock(Update.class);
+        ScrapperClient scrapperClient = mock(ScrapperClient.class);
         server.start();
         stubFor(post(urlEqualTo("/tg-chat/2")).willReturn(aResponse().withStatus(200)));
 
@@ -45,6 +46,7 @@ public class Hw1Test {
         when(update.message().chat().id()).thenReturn(2L);
         when(update.message().chat().username()).thenReturn("oposum");
         when(update.message().text()).thenReturn("/start");
+        when(scrapperClient.hasUser(2L)).thenReturn(false);
 
         Dialog dialog = new Dialog(scrapperClient);
         SendMessage response = dialog.onUpdateReceived(update);

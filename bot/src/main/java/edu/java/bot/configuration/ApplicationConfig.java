@@ -14,6 +14,7 @@ public record ApplicationConfig(
     @NotEmpty
     String telegramToken,
 
+
     Retry retry
 ) {
     @Bean
