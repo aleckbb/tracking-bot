@@ -20,7 +20,10 @@ public record ApplicationConfig(
     String baseUrlGithub,
     @NotNull
     String baseUrlStackOverFlow,
-    AccessType databaseAccessType
+    AccessType databaseAccessType,
+    Boolean useQueue,
+    @Bean
+    Kafka kafka
 ) {
     public record Scheduler(boolean enable, @NotNull Duration interval, @NotNull Duration forceCheckDelay) {
     }
@@ -49,5 +52,9 @@ public record ApplicationConfig(
             }
             return trueRetryableExceptions;
         }
+    }
+
+    public record Kafka(String bootstrapServer, String topicName, int partitionsCount, short replicationCount) {
+
     }
 }

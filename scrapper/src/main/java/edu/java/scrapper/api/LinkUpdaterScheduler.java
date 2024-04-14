@@ -1,10 +1,11 @@
 package edu.java.scrapper.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import edu.java.scrapper.botclient.BotClient;
+import edu.java.models.Request.LinkUpdate;
 import edu.java.scrapper.dtoClasses.github.GitHub;
 import edu.java.scrapper.dtoClasses.jdbc.DTOLink;
 import edu.java.scrapper.dtoClasses.sof.StackOverflow;
+import edu.java.scrapper.linkUpdateService.LinkUpdateService;
 import edu.java.scrapper.repos.data.GitHubData;
 import edu.java.scrapper.repos.data.SofData;
 import edu.java.scrapper.service.handlers.GitHubHandler;
@@ -14,7 +15,7 @@ import io.swagger.v3.core.util.Json;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -22,15 +23,16 @@ import org.springframework.stereotype.Component;
 @SuppressWarnings({"MultipleStringLiterals", "MagicNumber"})
 @Component
 @EnableScheduling
+@RequiredArgsConstructor
 public class LinkUpdaterScheduler {
-    @Autowired
-    private LinkUpdater linkUpdater;
-    @Autowired
-    private BotClient botClient;
-    @Autowired
-    private SofHandler sofHandler;
-    @Autowired
-    private GitHubHandler gitHubHandler;
+
+    private final LinkUpdater linkUpdater;
+
+    private final LinkUpdateService linkUpdateService;
+
+    private final SofHandler sofHandler;
+
+    private final GitHubHandler gitHubHandler;
 
     @Scheduled(fixedDelayString = "#{scheduler.interval}")
     public void update() {
@@ -52,11 +54,13 @@ public class LinkUpdaterScheduler {
                 }
             }
             if (!description.isEmpty()) {
-                botClient.sendUpdate(
-                    link.getLinkId(),
-                    link.getUrl(),
-                    description,
-                    linkUpdater.allChatIdsByLinkId(link.getLinkId())
+                linkUpdateService.sendUpdate(
+                    new LinkUpdate(
+                        link.getLinkId(),
+                        link.getUrl(),
+                        description,
+                        linkUpdater.allChatIdsByLinkId(link.getLinkId())
+                    )
                 );
             }
         }
