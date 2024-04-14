@@ -69,6 +69,9 @@ public class JdbcLinkService implements LinkService {
                     linkRepository.remove(new DTOLink(link.linkId(), null, null, null, null, null));
                 }
             }
+            if (isLinkExist) {
+                break;
+            }
         }
         if (!isLinkExist) {
             throw new NotExistException("Такой ссылки не отслеживается");

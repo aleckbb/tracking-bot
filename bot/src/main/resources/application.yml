@@ -6,7 +6,7 @@ app:
     retryable-exceptions:
       - java.lang.Exception
 
-  use-queue: true
+  use-queue: false
   kafka:
     bootstrap-server: localhost:9092, localhost:9093, localhost:9094
     topic-name: update-messages-topic
@@ -18,6 +18,36 @@ spring:
     name: bot
   jackson:
     time-zone: UTC
+
+management:
+  endpoints:
+    web:
+      base-path: "/"
+      exposure:
+        include: "health,info,prometheus"
+      path-mapping:
+        health: "health"
+        info: "info"
+        prometheus: "metrics"
+    jmx:
+      exposure:
+        include: "health,info,prometheus"
+  endpoint:
+    info:
+      enabled: true
+    health:
+      enabled: true
+    prometheus:
+      enabled: true
+  server:
+    port: 8091
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  prometheus:
+    metrics:
+      export:
+        enabled: true
 
 server:
   port: 8090
