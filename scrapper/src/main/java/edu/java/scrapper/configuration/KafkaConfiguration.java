@@ -1,8 +1,8 @@
 package edu.java.scrapper.configuration;
 
+import edu.java.models.Request.LinkUpdate;
 import java.util.HashMap;
 import java.util.Map;
-import edu.java.models.Request.LinkUpdate;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.ProducerConfig;

@@ -1,13 +1,11 @@
 package edu.java.scrapper.linkUpdateService;
 
 import edu.java.models.Request.LinkUpdate;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.stereotype.Service;
 
 @Slf4j
-public class ScrapperQueueProducer implements LinkUpdateService{
+public class ScrapperQueueProducer implements LinkUpdateService {
 
     public final KafkaTemplate<String, LinkUpdate> kafkaTemplate;
     public final String topicName;

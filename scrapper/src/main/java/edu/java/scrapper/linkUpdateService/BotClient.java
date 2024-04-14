@@ -8,7 +8,7 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-public class BotClient implements LinkUpdateService{
+public class BotClient implements LinkUpdateService {
 
     private final WebClient webClient;
 

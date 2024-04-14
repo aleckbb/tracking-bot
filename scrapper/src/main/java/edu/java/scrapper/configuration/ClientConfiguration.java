@@ -1,9 +1,9 @@
 package edu.java.scrapper.configuration;
 
 import edu.java.models.Request.LinkUpdate;
-import edu.java.scrapper.linkUpdateService.BotClient;
 import edu.java.scrapper.clients.GitHubClient;
 import edu.java.scrapper.clients.StackOverflowClient;
+import edu.java.scrapper.linkUpdateService.BotClient;
 import edu.java.scrapper.linkUpdateService.ScrapperQueueProducer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -40,7 +40,8 @@ public class ClientConfiguration {
     @ConditionalOnProperty(prefix = "app", name = "use-queue", havingValue = "true")
     public ScrapperQueueProducer getScrapperQueueProducer(
         KafkaTemplate<String, LinkUpdate> kafkaTemplate,
-        ApplicationConfig applicationConfig) {
+        ApplicationConfig applicationConfig
+    ) {
         return new ScrapperQueueProducer(kafkaTemplate, applicationConfig.kafka().topicName());
     }
 }
