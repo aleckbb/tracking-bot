@@ -29,7 +29,7 @@ public record ApplicationConfig(
     }
 
     public enum AccessType {
-        JDBC, JPA
+        JDBC, JPA, JOOQ
     }
 
     public enum RetryType {
