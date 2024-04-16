@@ -9,7 +9,7 @@ app:
   use-queue: true
   kafka:
     bootstrap-server: localhost:9092, localhost:9093, localhost:9094
-    topic-name: update-messages-topic
+    topic-name: dlt-topic
     partitions-count: 1
     replication-count: 3
 
