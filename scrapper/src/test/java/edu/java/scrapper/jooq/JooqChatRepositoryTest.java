@@ -58,7 +58,7 @@ public class JooqChatRepositoryTest extends IntegrationTest {
         chatRepository.add(chat);
         assertEquals(1, chatRepository.findAll().size());
         assertEquals(
-            "[DTOChat[chatId=1, name=Alexey, createdAt=2022-01-01T10:30+03:00]]",
+            "[DTOChat[chatId=1, name=Alexey, createdAt=2022-01-01T10:30Z]]",
             chatRepository.findAll().toString()
         );
     }

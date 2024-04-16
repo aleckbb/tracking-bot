@@ -59,7 +59,7 @@ public class JooqLinkRepositoryTest extends IntegrationTest {
         assertEquals(1, linkRepository.findAll().size());
         assertEquals(
             "[DTOLink(linkId=" + linkRepository.findByUrl(link.getUrl()).getLinkId() +
-                ", url=https://test, updateAt=2022-01-01T10:30+03:00, checkAt=2022-01-01T10:30+03:00, linkType=, data=)]",
+                ", url=https://test, updateAt=2022-01-01T10:30Z, checkAt=2022-01-01T10:30Z, linkType=, data=)]",
             linkRepository.findAll().toString()
         );
     }
