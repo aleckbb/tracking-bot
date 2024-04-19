@@ -33,7 +33,6 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-
       - name: build and publish the docker image
         run: |
           docker build --tag ghcr.io/aleckbb/bot:latest -f ${{ github.workspace }}/bot/Dockerfile .
