@@ -2,10 +2,25 @@ app:
   base-url-github: "https://api.github.com"
   base-url-stackoverflow: "https://api.stackexchange.com"
 
+  database-access-type: jdbc
+
   scheduler:
     enable: true
     interval: 10s
     force-check-delay: 10s
+
+  retry:
+    retry-type: Const
+    max-attempts: 3
+    retryable-exceptions:
+      - java.lang.Exception
+
+  use-queue: false
+  kafka:
+    bootstrap-server: localhost:9092, localhost:9093, localhost:9094
+    topic-name: update-messages-topic
+    partitions-count: 1
+    replication-count: 3
 
 spring:
   application:
@@ -13,8 +28,70 @@ spring:
   liquibase:
     change-log: ../../../../migrations/master.xml
     enabled: false
-  autoconfigure:
-    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+  datasource:
+    driver_class_name: org.postgresql.Driver
+    username: postgres
+    password: postgres
+    url: jdbc:postgresql://localhost:5432/scrapper
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        enable_lazy_load_no_trans: true
+    open-in-view: false
+  cache:
+    jcache:
+      provider: com.github.benmanes.caffeine.jcache.spi.CaffeineCachingProvider
+    cache-names:
+      - rate-limit-buckets-scrapper
+    caffeine:
+      spec: maximumSize=10000,expireAfterAccess=1m
+
+
+bucket4j:
+  cache-to-use: jcache
+  enabled: true
+  filters:
+    - cache-name: rate-limit-buckets-scrapper
+      url: /.*
+      http-response-body: "{ \"status\": 429, \"error\": \"Too Many Requests\", \"exceptionMessage\": \"Превышен лимит запросов. Попробуйте позже!\" }"
+      rate-limits:
+        - cache-key: "getHeader('X-api-key')"
+          bandwidths:
+            - capacity: 100
+              time: 1
+              unit: minutes
+              refill-speed: interval
+
+management:
+  endpoints:
+    web:
+      base-path: "/"
+      exposure:
+        include: "health,info,prometheus"
+      path-mapping:
+        health: "health"
+        info: "info"
+        prometheus: "metrics"
+    jmx:
+      exposure:
+        include: "health,info,prometheus"
+  endpoint:
+    info:
+      enabled: true
+    health:
+      enabled: true
+    prometheus:
+      enabled: true
+  server:
+    port: 8081
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  prometheus:
+    metrics:
+      export:
+        enabled: true
 
 server:
   port: 8080
@@ -26,4 +103,5 @@ springdoc:
   swagger-ui:
     path: /swagger-ui
 
-base-url-bot: "https://localhost:8080"
+base-url-bot: "http://localhost:8090"
+

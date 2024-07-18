@@ -5,8 +5,11 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
+import org.springframework.test.annotation.DirtiesContext;
 import static org.junit.Assert.assertEquals;
 
+
+@DirtiesContext
 public class MigrationTest extends IntegrationTest {
 
     @Test

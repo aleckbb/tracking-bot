@@ -1,17 +1,17 @@
 package edu.java.scrapper;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.nio.file.Path;
-import java.sql.SQLException;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import liquibase.Contexts;
+import liquibase.LabelExpression;
 import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
-import liquibase.exception.LiquibaseException;
 import liquibase.resource.DirectoryResourceAccessor;
-import org.junit.Test;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.JdbcDatabaseContainer;
@@ -19,6 +19,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
+@DirtiesContext
 public abstract class IntegrationTest {
     public static PostgreSQLContainer<?> POSTGRES;
 
@@ -28,33 +29,33 @@ public abstract class IntegrationTest {
             .withUsername("postgres")
             .withPassword("postgres");
         POSTGRES.start();
-
-        runMigrations(POSTGRES);
+        try {
+            runMigrations(POSTGRES);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private static void runMigrations(JdbcDatabaseContainer<?> c) {
+    public static void runMigrations(JdbcDatabaseContainer<?> c) throws Exception {
         Path pathToChangeLog = new File(".")
             .toPath()
             .toAbsolutePath()
             .getParent()
             .getParent()
             .resolve("migrations");
-        try (Database database = DatabaseFactory
+        Connection connection = DriverManager
+            .getConnection(c.getJdbcUrl(), c.getUsername(), c.getPassword());
+        Database database = DatabaseFactory
             .getInstance()
-            .findCorrectDatabaseImplementation(
-                new JdbcConnection(c.createConnection(""))
-            )) {
-            Liquibase liquibase = new Liquibase(
-                "master.xml",
-                new DirectoryResourceAccessor(pathToChangeLog),
-                database
-            );
-            liquibase.update(
-                new Contexts()
-            );
-        } catch (SQLException | FileNotFoundException | LiquibaseException e) {
-            throw new RuntimeException(e);
-        }
+            .findCorrectDatabaseImplementation(new JdbcConnection(connection));
+        Liquibase liquibase = new Liquibase(
+            "master.xml",
+            new DirectoryResourceAccessor(pathToChangeLog),
+            database
+        );
+        liquibase.update(
+            new Contexts(), new LabelExpression()
+        );
     }
 
     @DynamicPropertySource
