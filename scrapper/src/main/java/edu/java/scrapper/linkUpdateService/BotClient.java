@@ -1,4 +1,4 @@
-package edu.java.scrapper.botclient;
+package edu.java.scrapper.linkUpdateService;
 
 import edu.java.models.Request.LinkUpdate;
 import org.springframework.http.HttpStatusCode;
@@ -8,7 +8,7 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-public class BotClient {
+public class BotClient implements LinkUpdateService {
 
     private final WebClient webClient;
 
@@ -16,12 +16,13 @@ public class BotClient {
         this.webClient = builder.baseUrl(url).build();
     }
 
+    @Override
     @Retryable(interceptor = "MyInterceptor")
-    public void sendUpdate(long id, String url, String description, long[] tgChatIds) {
+    public void sendUpdate(LinkUpdate linkUpdate) {
         webClient.post()
             .uri("/updates")
             .contentType(MediaType.APPLICATION_JSON)
-            .body(BodyInserters.fromValue(new LinkUpdate(id, url, description, tgChatIds)))
+            .body(BodyInserters.fromValue(linkUpdate))
             .retrieve()
             .onStatus(
                 HttpStatusCode::is4xxClientError,

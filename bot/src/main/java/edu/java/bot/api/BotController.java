@@ -1,7 +1,6 @@
 package edu.java.bot.api;
 
-import com.pengrad.telegrambot.request.SendMessage;
-import edu.java.bot.service.TrackingBot;
+import edu.java.bot.service.UpdateSender;
 import edu.java.models.Request.LinkUpdate;
 import edu.java.models.Response.ApiErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/updates")
 public class BotController {
     @Autowired
-    private TrackingBot bot;
+    public UpdateSender updateSender;
 
     @Operation(summary = "Отправить обновление")
     @ApiResponses(value = {
@@ -45,8 +44,6 @@ public class BotController {
     })
     @PostMapping
     public void sendUpdate(@RequestBody LinkUpdate linkUpdate) {
-        for (long chatId : linkUpdate.tgChatIds()) {
-            bot.sendUpdate(new SendMessage(chatId, linkUpdate.description()));
-        }
+        updateSender.sendUpdate(linkUpdate);
     }
 }

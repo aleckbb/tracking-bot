@@ -13,9 +13,9 @@ import org.springframework.validation.annotation.Validated;
 public record ApplicationConfig(
     @NotEmpty
     String telegramToken,
-
-
-    Retry retry
+    Retry retry,
+    Boolean useQueue,
+    Kafka kafka
 ) {
     @Bean
     public String getTelegramToken() {
@@ -42,5 +42,9 @@ public record ApplicationConfig(
             }
             return trueRetryableExceptions;
         }
+    }
+
+    public record Kafka(String bootstrapServer, String topicName, int partitionsCount, short replicationCount) {
+
     }
 }
