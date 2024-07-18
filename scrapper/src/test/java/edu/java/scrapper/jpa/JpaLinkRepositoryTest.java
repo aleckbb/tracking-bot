@@ -1,25 +1,23 @@
 package edu.java.scrapper.jpa;
 
-import edu.java.dtoClasses.jdbc.DTOLink;
-import edu.java.repos.jdbc.JdbcLinkRepository;
-import edu.java.repos.jpa.JpaChatRepository;
-import edu.java.repos.jpa.JpaLinkRepository;
-import edu.java.repos.jpa.entities.Chat;
-import edu.java.repos.jpa.entities.Link;
 import edu.java.scrapper.IntegrationTest;
+import edu.java.scrapper.repos.jpa.JpaChatRepository;
+import edu.java.scrapper.repos.jpa.JpaLinkRepository;
+import edu.java.scrapper.repos.jpa.entities.Chat;
+import edu.java.scrapper.repos.jpa.entities.Link;
+import java.time.OffsetDateTime;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.OffsetDateTime;
-import java.util.Set;
 import static org.junit.Assert.assertEquals;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@DirtiesContext
 class JpaLinkRepositoryTest extends IntegrationTest {
     @Autowired private JpaLinkRepository jpaLinkRepository;
     @Autowired private JpaChatRepository jpaChatRepository;

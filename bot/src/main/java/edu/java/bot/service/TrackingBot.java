@@ -11,16 +11,21 @@ import org.springframework.stereotype.Component;
 public class TrackingBot extends TelegramBot {
     private final Dialog dialog;
 
+    private final CustomCounter counter;
+
     @Autowired
-    public TrackingBot(String botToken, ScrapperClient scrapperClient) {
+    public TrackingBot(String botToken, ScrapperClient scrapperClient, CustomCounter counter) {
         super(botToken);
         this.dialog = new Dialog(scrapperClient);
+        this.counter = counter;
     }
-
 
     public void run() {
         this.setUpdatesListener(updates -> {
-                updates.forEach(update -> execute(dialog.onUpdateReceived(update)));
+                updates.forEach(update -> {
+                    execute(dialog.onUpdateReceived(update));
+                    counter.getCounter().increment();
+                });
                 return UpdatesListener.CONFIRMED_UPDATES_ALL;
             }
         );

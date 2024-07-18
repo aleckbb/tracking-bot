@@ -102,7 +102,9 @@ public class Dialog {
             scrapperClient.addLink(chat.id(), chat.username(), url);
             return new SendMessage(chat.id(), "Ссылка добавлена для отслеживания!");
         } catch (Exception e) {
-            return new SendMessage(chat.id(), "Вы уже отслеживаете эту ссылку!");
+            String answer = e.getCause().getMessage().equals("Too many requests")
+                ? "Слишком много сообщений. Дай мне отдохнуть!" : "Ссылка уже отслеживается!";
+            return new SendMessage(chat.id(), answer);
         }
     }
 
@@ -111,7 +113,9 @@ public class Dialog {
             scrapperClient.delLinks(chat.id(), url);
             return new SendMessage(chat.id(), "Ссылка больше не отслеживается!");
         } catch (Exception e) {
-            return new SendMessage(chat.id(), "Вы ещё не отслеживаете эту ссылку!");
+            String answer = e.getCause().getMessage().equals("Too many requests")
+                ? "Слишком много сообщений. Дай мне отдохнуть!" : "Такой ссылки не отслеживается!";
+            return new SendMessage(chat.id(), answer);
         }
     }
 
@@ -119,77 +123,98 @@ public class Dialog {
         Long id = chat.id();
         String name = chat.username();
         try {
+            if (scrapperClient.hasUser(id)) {
+                return new SendMessage(id, "Ты уже зарегистрирован!");
+            }
             scrapperClient.chatReg(id, name);
             return new SendMessage(id, "Привет, " + name + ", пометил тебя в блокнотике!");
         } catch (Exception e) {
-            return new SendMessage(id, "Вы уже зарегистрированы!");
+            String answer = e.getCause().getMessage().equals("Too many requests")
+                ? "Слишком много сообщений. Дай мне отдохнуть!" : e.getCause().getMessage();
+            return new SendMessage(id, answer);
         }
     }
 
     public SendMessage help(Chat chat) {
         long id = chat.id();
         try {
-            scrapperClient.chatReg(id, chat.username());
-            scrapperClient.chatDel(id);
-            return new SendMessage(id, "Вы не зарегистрированы!");
+            if (scrapperClient.hasUser(id)) {
+                return new SendMessage(id, """
+                    /start -- зарегистрировать пользователя
+                    /help -- вывести окно с командами
+                    /track -- начать отслеживание ссылки
+                    /untrack -- прекратить отслеживание ссылки
+                    /list -- показать список отслеживаемых ссылок""");
+            } else {
+                return new SendMessage(id, "Вы не зарегистрированы!");
+            }
         } catch (Exception e) {
-            return new SendMessage(id, """
-                /start -- зарегистрировать пользователя
-                /help -- вывести окно с командами
-                /track -- начать отслеживание ссылки
-                /untrack -- прекратить отслеживание ссылки
-                /list -- показать список отслеживаемых ссылок""");
+            String answer = e.getCause().getMessage().equals("Too many requests")
+                ? "Слишком много сообщений. Дай мне отдохнуть!" : e.getCause().getMessage();
+            return new SendMessage(id, answer);
         }
     }
 
     public SendMessage track(Chat chat) {
         long id = chat.id();
         try {
-            scrapperClient.chatReg(id, chat.username());
-            scrapperClient.chatDel(id);
-            return new SendMessage(id, "Вы не зарегистрированы!");
+            if (scrapperClient.hasUser(id)) {
+                waitMap.put(id, true);
+                return new SendMessage(id, "Введите ссылку!");
+            } else {
+                return new SendMessage(id, "Вы не зарегистрированы!");
+            }
         } catch (Exception e) {
-            waitMap.put(id, true);
-            return new SendMessage(id, "Введите ссылку!");
+            String answer = e.getCause().getMessage().equals("Too many requests")
+                ? "Слишком много сообщений. Дай мне отдохнуть!" : e.getCause().getMessage();
+            return new SendMessage(id, answer);
         }
     }
 
     public SendMessage unTrack(Chat chat) {
         long id = chat.id();
         try {
-            scrapperClient.chatReg(id, chat.username());
-            scrapperClient.chatDel(id);
-            return new SendMessage(id, "Вы не зарегистрированы!");
-        } catch (Exception e) {
-            try {
-                scrapperClient.getLinks(id);
-                waitMap.put(id, false);
-                return new SendMessage(id, "Введите ссылку!");
-            } catch (Exception ex) {
-                return new SendMessage(id, "Вы ещё не отслеживаете ни одного сайта!");
+            if (scrapperClient.hasUser(id)) {
+                try {
+                    scrapperClient.getLinks(id);
+                    waitMap.put(id, false);
+                    return new SendMessage(id, "Введите ссылку!");
+                } catch (Exception ex) {
+                    return new SendMessage(id, "Вы ещё не отслеживаете ни одного сайта!");
+                }
+            } else {
+                return new SendMessage(id, "Вы не зарегистрированы!");
             }
+        } catch (Exception e) {
+            String answer = e.getCause().getMessage().equals("Too many requests")
+                ? "Слишком много сообщений. Дай мне отдохнуть!" : e.getCause().getMessage();
+            return new SendMessage(id, answer);
         }
     }
 
     public SendMessage list(Chat chat) {
         long id = chat.id();
         try {
-            scrapperClient.chatReg(id, chat.username());
-            scrapperClient.chatDel(id);
-            return new SendMessage(id, "Вы не зарегистрированы!");
-        } catch (Exception e) {
-            try {
-                ListLinksResponse links = scrapperClient.getLinks(id);
-                StringBuilder messageText = new StringBuilder();
-                int i = 1;
-                for (LinkResponse link : links.links()) {
-                    messageText.append(i).append(". ").append(link.url()).append("\n");
-                    ++i;
+            if (scrapperClient.hasUser(id)) {
+                try {
+                    ListLinksResponse links = scrapperClient.getLinks(id);
+                    StringBuilder messageText = new StringBuilder();
+                    int i = 1;
+                    for (LinkResponse link : links.links()) {
+                        messageText.append(i).append(". ").append(link.url()).append("\n");
+                        ++i;
+                    }
+                    return new SendMessage(id, messageText.toString());
+                } catch (Exception ex) {
+                    return new SendMessage(id, "Вы ещё не отслеживаете ни одного сайта!");
                 }
-                return new SendMessage(id, messageText.toString());
-            } catch (Exception ex) {
-                return new SendMessage(id, "Вы ещё не отслеживаете ни одного сайта!");
+            } else {
+                return new SendMessage(id, "Вы не зарегистрированы!");
             }
+        } catch (Exception e) {
+            String answer = e.getCause().getMessage().equals("Too many requests")
+                ? "Слишком много сообщений. Дай мне отдохнуть!" : e.getCause().getMessage();
+            return new SendMessage(id, answer);
         }
     }
 }
