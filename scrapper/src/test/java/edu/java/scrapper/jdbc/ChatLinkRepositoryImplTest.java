@@ -1,29 +1,30 @@
 package edu.java.scrapper.jdbc;
 
-import edu.java.dtoClasses.jdbc.DTOChat;
-import edu.java.dtoClasses.jdbc.DTOLink;
-import edu.java.dtoClasses.jdbc.DTOSub;
-import edu.java.repos.chat.ChatRepositoryImpl;
-import edu.java.repos.chatLink.ChatLinkRepositoryImpl;
-import edu.java.repos.link.LinkRepositoryImpl;
+import edu.java.scrapper.dtoClasses.jdbc.DTOChat;
+import edu.java.scrapper.dtoClasses.jdbc.DTOLink;
+import edu.java.scrapper.dtoClasses.jdbc.DTOSub;
+import edu.java.scrapper.repos.jdbc.JdbcChatRepository;
+import edu.java.scrapper.repos.jdbc.JdbcChatLinkRepository;
+import edu.java.scrapper.repos.jdbc.JdbcLinkRepository;
 import edu.java.scrapper.IntegrationTest;
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import static org.junit.Assert.assertEquals;
 
 @SpringBootTest
+@DirtiesContext
 public class ChatLinkRepositoryImplTest extends IntegrationTest {
     @Autowired
-    private ChatRepositoryImpl chatRepository;
+    private JdbcChatRepository chatRepository;
     @Autowired
-    private LinkRepositoryImpl linkRepository;
+    private JdbcLinkRepository linkRepository;
     @Autowired
-    private ChatLinkRepositoryImpl chatLinkRepository;
+    private JdbcChatLinkRepository chatLinkRepository;
 
     private final OffsetDateTime time = OffsetDateTime.parse("2022-01-01T10:30:00+00:00");
     private final DTOChat chat = new DTOChat(
@@ -48,9 +49,9 @@ public class ChatLinkRepositoryImplTest extends IntegrationTest {
         linkRepository.add(link);
         chatRepository.add(chat);
         assertEquals(0, chatLinkRepository.findAll().size());
-        chatLinkRepository.add(new DTOSub(chat.chatId(), linkRepository.findByUrl(link.url()).linkId()));
+        chatLinkRepository.add(new DTOSub(chat.chatId(), linkRepository.findByUrl(link.getUrl()).getLinkId()));
         assertEquals(chat.chatId(), chatLinkRepository.findAll().getFirst().chatId());
-        assertEquals(linkRepository.findByUrl(link.url()).linkId(), chatLinkRepository.findAll().getFirst().linkId());
+        assertEquals(linkRepository.findByUrl(link.getUrl()).getLinkId(), chatLinkRepository.findAll().getFirst().linkId());
         assertEquals(1, chatRepository.findAll().size());
     }
 
@@ -60,7 +61,7 @@ public class ChatLinkRepositoryImplTest extends IntegrationTest {
     void remove() {
         linkRepository.add(link);
         chatRepository.add(chat);
-        sub = new DTOSub(chat.chatId(), linkRepository.findByUrl(link.url()).linkId());
+        sub = new DTOSub(chat.chatId(), linkRepository.findByUrl(link.getUrl()).getLinkId());
         chatLinkRepository.add(sub);
         assertEquals(1, chatLinkRepository.findAll().size());
         chatLinkRepository.remove(sub);
@@ -73,11 +74,11 @@ public class ChatLinkRepositoryImplTest extends IntegrationTest {
     void findAll() {
         linkRepository.add(link);
         chatRepository.add(chat);
-        sub = new DTOSub(chat.chatId(), linkRepository.findByUrl(link.url()).linkId());
+        sub = new DTOSub(chat.chatId(), linkRepository.findByUrl(link.getUrl()).getLinkId());
         chatLinkRepository.add(sub);
         assertEquals(1, chatLinkRepository.findAll().size());
         assertEquals(
-            "[DTOSub[chatId=1, linkId=" + linkRepository.findByUrl(link.url()).linkId() + "]]",
+            "[DTOSub[chatId=1, linkId=" + linkRepository.findByUrl(link.getUrl()).getLinkId() + "]]",
             chatLinkRepository.findAll().toString()
         );
     }

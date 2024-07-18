@@ -1,11 +1,53 @@
 app:
-  telegram-token: 
+  telegram-token:
+  retry:
+    retry-type: Const
+    max-attempts: 3
+    retryable-exceptions:
+      - java.lang.Exception
+
+  use-queue: false
+  kafka:
+    bootstrap-server: localhost:9092, localhost:9093, localhost:9094
+    topic-name: dlt-topic
+    partitions-count: 1
+    replication-count: 3
 
 spring:
   application:
     name: bot
   jackson:
     time-zone: UTC
+
+management:
+  endpoints:
+    web:
+      base-path: "/"
+      exposure:
+        include: "health,info,prometheus"
+      path-mapping:
+        health: "health"
+        info: "info"
+        prometheus: "metrics"
+    jmx:
+      exposure:
+        include: "health,info,prometheus"
+  endpoint:
+    info:
+      enabled: true
+    health:
+      enabled: true
+    prometheus:
+      enabled: true
+  server:
+    port: 8091
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  prometheus:
+    metrics:
+      export:
+        enabled: true
 
 server:
   port: 8090
@@ -17,4 +59,4 @@ springdoc:
   swagger-ui:
     path: /swagger-ui
 
-base-url-scrapper: "https://localhost:8090"
+base-url-scrapper: "http://localhost:8080"

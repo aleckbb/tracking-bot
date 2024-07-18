@@ -1,22 +1,23 @@
 package edu.java.scrapper.jdbc;
 
-import edu.java.dtoClasses.jdbc.DTOChat;
-import edu.java.repos.chat.ChatRepositoryImpl;
 import edu.java.scrapper.IntegrationTest;
+import edu.java.scrapper.dtoClasses.jdbc.DTOChat;
+import edu.java.scrapper.repos.jdbc.JdbcChatRepository;
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import static org.junit.Assert.assertEquals;
 
 @SpringBootTest
+@DirtiesContext
 public class ChatRepositoryImplTest extends IntegrationTest {
     @Autowired
-    private ChatRepositoryImpl chatRepository;
+    private JdbcChatRepository chatRepository;
 
     static DTOChat chat;
 

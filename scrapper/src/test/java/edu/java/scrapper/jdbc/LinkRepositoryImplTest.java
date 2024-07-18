@@ -1,21 +1,22 @@
 package edu.java.scrapper.jdbc;
 
-import edu.java.dtoClasses.jdbc.DTOLink;
-import edu.java.repos.link.LinkRepositoryImpl;
 import edu.java.scrapper.IntegrationTest;
+import edu.java.scrapper.dtoClasses.jdbc.DTOLink;
+import edu.java.scrapper.repos.jdbc.JdbcLinkRepository;
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import static org.junit.Assert.assertEquals;
 
 @SpringBootTest
+@DirtiesContext
 public class LinkRepositoryImplTest extends IntegrationTest {
-    @Autowired private LinkRepositoryImpl linkRepository;
+    @Autowired private JdbcLinkRepository linkRepository;
 
     static DTOLink link;
 
@@ -33,7 +34,7 @@ public class LinkRepositoryImplTest extends IntegrationTest {
     @Test @Transactional @Rollback void add() {
         assertEquals(0, linkRepository.findAll().size());
         linkRepository.add(link);
-        assertEquals("https://test", linkRepository.findAll().getFirst().url());
+        assertEquals("https://test", linkRepository.findAll().getFirst().getUrl());
         assertEquals(1, linkRepository.findAll().size());
     }
 
@@ -42,7 +43,7 @@ public class LinkRepositoryImplTest extends IntegrationTest {
         assertEquals(1, linkRepository.findAll().size());
         DTOLink curLink =
             new DTOLink(
-                linkRepository.findByUrl(link.url()).linkId(),
+                linkRepository.findByUrl(link.getUrl()).getLinkId(),
                 null,
                 null,
                 null,
@@ -57,8 +58,8 @@ public class LinkRepositoryImplTest extends IntegrationTest {
         linkRepository.add(link);
         assertEquals(1, linkRepository.findAll().size());
         assertEquals(
-            "[DTOLink[linkId=" + linkRepository.findByUrl(link.url()).linkId() +
-                ", url=https://test, updateAt=2022-01-01T10:30Z, checkAt=2022-01-01T10:30Z, linkType=, data=]]",
+            "[DTOLink(linkId=" + linkRepository.findByUrl(link.getUrl()).getLinkId() +
+                ", url=https://test, updateAt=2022-01-01T10:30Z, checkAt=2022-01-01T10:30Z, linkType=, data=)]",
             linkRepository.findAll().toString()
         );
     }

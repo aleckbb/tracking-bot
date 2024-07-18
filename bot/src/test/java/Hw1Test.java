@@ -1,36 +1,56 @@
+import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.WireMock;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
+import edu.java.bot.scrapperclient.ScrapperClient;
 import edu.java.bot.service.Dialog;
-import edu.java.bot.user.User;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.web.reactive.function.client.WebClient;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.delete;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class Hw1Test {
+    private static final WireMockServer server = new WireMockServer();
+
+    @AfterAll
+    static void tearDown() {
+        server.stop();
+    }
+
+    ScrapperClient scrapperClient = new ScrapperClient(WebClient.builder(), "http://localhost:8080");
+
     @Test
     @DisplayName("Тест команды /start")
     void test1() {
-
         // given
         Update update = mock(Update.class);
+        ScrapperClient scrapperClient = mock(ScrapperClient.class);
+        server.start();
+        stubFor(post(urlEqualTo("/tg-chat/2")).willReturn(aResponse().withStatus(200)));
 
         // when
         when(update.message()).thenReturn(mock(Message.class));
         when(update.message().chat()).thenReturn(mock(Chat.class));
-        when(update.message().chat().id()).thenReturn(1L);
+        when(update.message().chat().id()).thenReturn(2L);
+        when(update.message().chat().username()).thenReturn("oposum");
         when(update.message().text()).thenReturn("/start");
+        when(scrapperClient.hasUser(2L)).thenReturn(false);
 
-        Dialog dialog = new Dialog();
-        ArrayList<User> users = new ArrayList<>();
-        SendMessage response = dialog.onUpdateReceived(update, users);
-        String result = "Привет, null, пометил тебя в блокнотике!";
+        Dialog dialog = new Dialog(scrapperClient);
+        SendMessage response = dialog.onUpdateReceived(update);
+        String result = "Привет, oposum, пометил тебя в блокнотике!";
 
         // then
         assertEquals(result, response.getParameters().get("text").toString());
@@ -41,17 +61,18 @@ public class Hw1Test {
     void test2() {
         // given
         Update update = mock(Update.class);
+        ScrapperClient scrapperClient = mock(ScrapperClient.class);
 
         // when
         when(update.message()).thenReturn(mock(Message.class));
         when(update.message().chat()).thenReturn(mock(Chat.class));
         when(update.message().chat().id()).thenReturn(1L);
+        when(update.message().chat().username()).thenReturn("oposum");
         when(update.message().text()).thenReturn("/help");
+        when(scrapperClient.hasUser(1L)).thenReturn(true);
 
-        Dialog dialog = new Dialog();
-        ArrayList<User> users = new ArrayList<>();
-        users.add(new User(null, 1L, null, null));
-        SendMessage response = dialog.onUpdateReceived(update, users);
+        Dialog dialog = new Dialog(scrapperClient);
+        SendMessage response = dialog.onUpdateReceived(update);
         String result = """
             /start -- зарегистрировать пользователя
             /help -- вывести окно с командами
@@ -68,27 +89,29 @@ public class Hw1Test {
     void test3() {
         // given
         Update update = mock(Update.class);
+        server.start();
+        stubFor(post(urlEqualTo("/links")).willReturn(aResponse().withStatus(200)));
+        ScrapperClient scrapperClient = mock(ScrapperClient.class);
 
         // when
         when(update.message()).thenReturn(mock(Message.class));
         when(update.message().chat()).thenReturn(mock(Chat.class));
-        when(update.message().chat().id()).thenReturn(1L);
+        when(update.message().chat().id()).thenReturn(2L);
+        when(update.message().chat().username()).thenReturn("oposum");
         when(update.message().text()).thenReturn("/track");
+        when(scrapperClient.hasUser(2L)).thenReturn(true);
 
-        Dialog dialog = new Dialog();
-        ArrayList<User> users = new ArrayList<>();
-        users.add(new User(null, 1L, null, null));
-        SendMessage response = dialog.onUpdateReceived(update, users);
+        Dialog dialog = new Dialog(scrapperClient);
+        SendMessage response = dialog.onUpdateReceived(update);
         String result = "Введите ссылку!";
+        dialog.waitMap.put(2L, true);
 
         // then
         assertEquals(result, response.getParameters().get("text").toString());
 
         // when
-        when(update.message().chat().id()).thenReturn(2L);
-        when(update.message().text()).thenReturn("https://github.com/aleckbb/tracking-bot/pull/1");
-        users.add(new User(null, 2L, new ArrayList<>(), true));
-        response = dialog.onUpdateReceived(update, users);
+        when(update.message().text()).thenReturn("https://github.com/aleckbb/tracking-bot");
+        response = dialog.onUpdateReceived(update);
         result = "Ссылка добавлена для отслеживания!";
 
         // then
@@ -97,32 +120,32 @@ public class Hw1Test {
 
     @Test
     @DisplayName("Тест команды /untrack")
-    void test4() throws MalformedURLException {
+    void test4() {
         // given
         Update update = mock(Update.class);
+        ScrapperClient scrapperClient = mock(ScrapperClient.class);
+        server.start();
+        stubFor(delete(urlEqualTo("/links")).willReturn(aResponse().withStatus(200)));
+        stubFor(get(urlEqualTo("/links")).willReturn(aResponse().withStatus(200)));
 
         // when
         when(update.message()).thenReturn(mock(Message.class));
         when(update.message().chat()).thenReturn(mock(Chat.class));
-        when(update.message().chat().id()).thenReturn(1L);
+        when(update.message().chat().id()).thenReturn(2L);
+        when(update.message().chat().username()).thenReturn("oposum");
         when(update.message().text()).thenReturn("/untrack");
+        when(scrapperClient.hasUser(2L)).thenReturn(true);
 
-        Dialog dialog = new Dialog();
-        ArrayList<User> users = new ArrayList<>();
-        ArrayList<URL> tracks = new ArrayList<>();
-        tracks.add(new URL("https://github.com/aleckbb/tracking-bot/pull/1"));
-        users.add(new User(null, 1L, tracks, null));
-        SendMessage response = dialog.onUpdateReceived(update, users);
+        Dialog dialog = new Dialog(scrapperClient);
+        SendMessage response = dialog.onUpdateReceived(update);
         String result = "Введите ссылку!";
 
         // then
         assertEquals(result, response.getParameters().get("text").toString());
 
         // when
-        when(update.message().chat().id()).thenReturn(2L);
-        when(update.message().text()).thenReturn("https://github.com/aleckbb/tracking-bot/pull/1");
-        users.add(new User(null, 2L, tracks, false));
-        response = dialog.onUpdateReceived(update, users);
+        when(update.message().text()).thenReturn("https://github.com/aleckbb/tracking-bot");
+        response = dialog.onUpdateReceived(update);
         result = "Ссылка больше не отслеживается!";
 
         // then
@@ -134,20 +157,24 @@ public class Hw1Test {
     void test5() throws MalformedURLException {
         // given
         Update update = mock(Update.class);
+        ScrapperClient scrapperClient = mock(ScrapperClient.class);
+        server.start();
+        stubFor(get(urlEqualTo("/links"))
+            .withHeader("Tg-Chat-Id", WireMock.equalTo("2"))
+            .willReturn(aResponse()
+                .withStatus(200)));
 
         // when
         when(update.message()).thenReturn(mock(Message.class));
         when(update.message().chat()).thenReturn(mock(Chat.class));
-        when(update.message().chat().id()).thenReturn(1L);
+        when(update.message().chat().id()).thenReturn(2L);
+        when(update.message().chat().username()).thenReturn("oposum");
         when(update.message().text()).thenReturn("/list");
+        when(scrapperClient.hasUser(2L)).thenReturn(true);
 
-        Dialog dialog = new Dialog();
-        ArrayList<User> users = new ArrayList<>();
-        ArrayList<URL> tracks = new ArrayList<>();
-        tracks.add(new URL("https://github.com/aleckbb/tracking-bot/pull/1"));
-        users.add(new User(null, 1L, tracks, null));
-        SendMessage response = dialog.onUpdateReceived(update, users);
-        String result = "1. https://github.com/aleckbb/tracking-bot/pull/1\n";
+        Dialog dialog = new Dialog(scrapperClient);
+        SendMessage response = dialog.onUpdateReceived(update);
+        String result = "Вы ещё не отслеживаете ни одного сайта!";
 
         // then
         assertEquals(result, response.getParameters().get("text").toString());
@@ -162,13 +189,12 @@ public class Hw1Test {
         // when
         when(update.message()).thenReturn(mock(Message.class));
         when(update.message().chat()).thenReturn(mock(Chat.class));
-        when(update.message().chat().id()).thenReturn(1L);
+        when(update.message().chat().id()).thenReturn(2L);
+        when(update.message().chat().username()).thenReturn("oposum");
         when(update.message().text()).thenReturn("/hello");
 
-        Dialog dialog = new Dialog();
-        ArrayList<User> users = new ArrayList<>();
-        users.add(new User(null, 1L, null, null));
-        SendMessage response = dialog.onUpdateReceived(update, users);
+        Dialog dialog = new Dialog(scrapperClient);
+        SendMessage response = dialog.onUpdateReceived(update);
         String result = "Я не знаю такой команды!";
 
         // then
@@ -180,16 +206,21 @@ public class Hw1Test {
     void test7() {
         // given
         Update update = mock(Update.class);
+        ScrapperClient scrapperClient = mock(ScrapperClient.class);
+        server.start();
+        stubFor(post(urlEqualTo("/tg-chat/2")).willReturn(aResponse().withStatus(200)));
+        stubFor(delete(urlEqualTo("/tg-chat/2")).willReturn(aResponse().withStatus(200)));
 
         // when
         when(update.message()).thenReturn(mock(Message.class));
         when(update.message().chat()).thenReturn(mock(Chat.class));
-        when(update.message().chat().id()).thenReturn(1L);
+        when(update.message().chat().id()).thenReturn(2L);
+        when(update.message().chat().username()).thenReturn("oposum");
         when(update.message().text()).thenReturn("/list");
+        when(scrapperClient.hasUser(2L)).thenReturn(false);
 
-        Dialog dialog = new Dialog();
-        ArrayList<User> users = new ArrayList<>();
-        SendMessage response = dialog.onUpdateReceived(update, users);
+        Dialog dialog = new Dialog(scrapperClient);
+        SendMessage response = dialog.onUpdateReceived(update);
         String result = "Вы не зарегистрированы!";
 
         // then
