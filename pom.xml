@@ -50,6 +50,7 @@
         <module>scrapper</module>
         <module>models</module>
         <module>retry</module>
+        <module>scrapper-jooq</module>
     </modules>
 
     <dependencyManagement>

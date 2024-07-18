@@ -105,6 +105,30 @@ services:
     depends_on:
       - zoo
 
+  prometheus:
+    image: prom/prometheus:v2.51.2
+    container_name: prometheus
+    hostname: prometheus
+    ports:
+      - 9090:9090
+    volumes:
+      - ./scrapper/src/main/resources/prometheus/:/etc/prometheus/
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana-oss:10.2.2
+    container_name: grafana
+    hostname: grafana
+    user: root
+    depends_on:
+      - prometheus
+    ports:
+      - 3000:3000
+    volumes:
+      - ./grafana:/var/lib/grafana
+      - ./grafana/provisioning/:/etc/grafana/provisioning
+
 volumes:
   kafka1: { }
   kafka2: { }
