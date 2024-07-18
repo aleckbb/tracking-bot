@@ -152,6 +152,12 @@
             <version>0.1</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>edu.java</groupId>
+            <artifactId>scrapper-jooq</artifactId>
+            <version>0.1</version>
+            <scope>compile</scope>
+        </dependency>
 
         <!-- Bucket -->
         <dependency>
@@ -193,6 +199,11 @@
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-tracing-bridge-brave</artifactId>
             <version>1.2.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq</artifactId>
         </dependency>
     </dependencies>
 
